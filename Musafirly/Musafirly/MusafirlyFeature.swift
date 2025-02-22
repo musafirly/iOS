@@ -6,24 +6,25 @@
 //
 
 import ComposableArchitecture
+import SwiftUI
 
 @Reducer
 struct MusafirlyFeature {
     @ObservableState
     struct State {
-        var selectedTab: Int = 0
+        var selectedTab: Tab = .home
     }
     
     enum Action {
-       case tabButtonTapped(Int)
+       case tabButtonTapped(Tab)
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
                 
-            case .tabButtonTapped(let index):
-                state.selectedTab = index
+            case .tabButtonTapped(let tab):
+                state.selectedTab = tab
                 return .none
             }
             

@@ -15,7 +15,7 @@
 
 enum Tab: Int, CaseIterable, Identifiable, Equatable {
     case home
-    case discover
+    case explore
     case profile
     
     var id: Int { rawValue }
@@ -23,7 +23,7 @@ enum Tab: Int, CaseIterable, Identifiable, Equatable {
     var icon: String {
         switch self {
         case .home: return "house"
-        case .discover: return "magnifyingglass"
+        case .explore: return "magnifyingglass.circle"
         case .profile: return "person.crop.circle"
         }
     }
@@ -31,8 +31,8 @@ enum Tab: Int, CaseIterable, Identifiable, Equatable {
     var title: String {
         switch self {
         case .home: return "Home"
-        case .discover: return "Discover"
-        case .profile: return "Settings"
+        case .explore: return "Explore"
+        case .profile: return "Profile"
         }
     }
 }

@@ -28,7 +28,7 @@ struct CustomTabItem: View {
 
 struct CustomTabBar: View {
     let store = MusafirlyApp.GlobalStore
-    let tabs: [Tab] = [.home, .discover, .profile]
+    let tabs: [Tab] = [.home, .explore, .profile]
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -40,13 +40,13 @@ struct CustomTabBar: View {
             
             // Tab items
             HStack(spacing: 0) {
-                ForEach(tabs.indices, id: \.self) { index in
+                ForEach(tabs, id: \.self) { tab in
                     CustomTabItem(
-                        tab: tabs[index],
-                        isSelected: store.selectedTab == index
+                        tab: tab,
+                        isSelected: store.selectedTab == tab
                     )
                     .onTapGesture {
-                        store.send(.tabButtonTapped(index), animation: .spring(response: 0.3, dampingFraction: 0.7))
+                        store.send(.tabButtonTapped(tab), animation: .spring(response: 0.3, dampingFraction: 0.7))
                     }
                 }
             }
@@ -54,7 +54,7 @@ struct CustomTabBar: View {
             .padding(.vertical, 12)
         
             
-            if let selectedTab = Tab(rawValue: store.selectedTab) {
+            if let selectedTab = Tab(rawValue: store.selectedTab.rawValue) {
                 // Indicator
                 Rectangle()
                     .fill(Color.accentColor)
