@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct MusafirlyApp: App {
     let persistenceController = PersistenceController.shared
+    
+    static let GlobalStore = Store(initialState: MusafirlyFeature.State()) {
+        MusafirlyFeature()
+    }
 
     var body: some Scene {
         WindowGroup {
