@@ -15,10 +15,11 @@ struct ContentView: View {
         WithViewStore(MusafirlyApp.GlobalStore, observe: \.selectedTab) { viewStore in
             ZStack {
                 VStack (alignment: .leading) {
-                    HeaderView(selectedTab: viewStore.state)
-                        .animation(.none, value: viewStore.state)
-                        .padding(.bottom, 15)
-//                        .frame(alignment: .center)
+                    if viewStore.state != .home {
+                        HeaderView(selectedTab: viewStore.state)
+                            .animation(.none, value: viewStore.state)
+                            .padding(.bottom, 15)
+                    }
                     
                     switch viewStore.state {
                     case .home:
@@ -33,7 +34,6 @@ struct ContentView: View {
                     
                     CustomTabBar()
                 }
-                .padding()
             }
         }
     }
