@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HeaderView: View {
-    let selectedTab: Tab
+    @Binding var selectedTab: Tab
     
     var body: some View {
         HStack {
@@ -24,5 +24,5 @@ struct HeaderView: View {
 }
 
 #Preview {
-    HeaderView(selectedTab: .explore)
+    HeaderView(selectedTab: .constant(.home))
 }

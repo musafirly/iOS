@@ -7,38 +7,36 @@
 
 import SwiftUI
 import CoreData
-import ComposableArchitecture
 
 struct ContentView: View {
+    @State private var selectedTab: Tab = .home
     
     var body: some View {
-        WithViewStore(MusafirlyApp.GlobalStore, observe: \.selectedTab) { viewStore in
-            ZStack {
-                VStack (alignment: .leading) {
-                    if viewStore.state != .home {
-                        HeaderView(selectedTab: viewStore.state)
-                            .animation(.none, value: viewStore.state)
-                            .padding(.bottom, 15)
-                    }
-                    
-                    switch viewStore.state {
-                    case .home:
-                        HomeView()
-                    case .explore:
-                        ExploreView()
-                    case .profile:
-                        ProfileView()
-                    }
-                    
-                    Spacer()
-                    
-                    CustomTabBar()
+        ZStack {
+            VStack (alignment: .leading) {
+                if selectedTab != .home {
+                    HeaderView(selectedTab: $selectedTab)
+                        .animation(.none, value: selectedTab)
+                        .padding(.bottom, 15)
                 }
+                
+                switch selectedTab {
+                case .home:
+                    HomeView()
+                case .explore:
+                    ExploreView()
+                case .profile:
+                    ProfileView()
+                }
+                
+                Spacer()
+                
+                CustomTabBar(selectedTab: $selectedTab)
             }
         }
     }
-    
 }
+
 
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)

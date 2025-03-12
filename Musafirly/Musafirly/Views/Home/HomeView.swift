@@ -19,10 +19,10 @@ struct AnnotationShapeStyle: ShapeStyle {
 }
 
 struct HomeView: View {
-    @State private var showDetails = false
-    
     let locations: [Location] = Location.mockLocations
-    var currentLocation: Location = Location.mockLocations.first ?? Location(name: "Test name", latitude: "0", longitude: "0", address: "1346 67th Street")
+    
+    @State private var showDetails = false
+    @State private var currentLocation: Location = Location.mockLocations.first ?? Location(name: "Test name", latitude: "0", longitude: "0", address: "1346 67th Street")
     
     var body: some View {
         GeometryReader { geometry in
@@ -30,7 +30,8 @@ struct HomeView: View {
                 UserAnnotation()
                 
                 ForEach(locations) { loc in
-                    if let latitude = Double(loc.latitude), let longitude = Double(loc.longitude)
+                    if let latitude = Double(loc.latitude),
+                       let longitude = Double(loc.longitude)
                     {
                         
                         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -43,16 +44,15 @@ struct HomeView: View {
                                 .foregroundStyle(.orange)
                                 .onTapGesture {
                                     showDetails = true
+                                    currentLocation = loc
                                 }
                                 .scaleEffect(2)
                         }
                     }
-                    
                 }
-                
             }
             .sheet(isPresented: $showDetails) {
-                LocationDetailsModalView(location: currentLocation, showDetails: $showDetails)
+                LocationDetailsModalView(location: $currentLocation, showDetails: $showDetails)
                     .presentationDetents([.medium])
             }
         }
