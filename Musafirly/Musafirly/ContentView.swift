@@ -7,9 +7,13 @@
 
 import SwiftUI
 import CoreData
+import MapKit
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .home
+    
+    var homeView = HomeView(vm: .init())
+    
     
     var body: some View {
         ZStack {
@@ -17,12 +21,12 @@ struct ContentView: View {
                 if selectedTab != .home {
                     HeaderView(selectedTab: $selectedTab)
                         .animation(.none, value: selectedTab)
-                        .padding(.bottom, 15)
+                        .padding(.bottom, 8)
                 }
                 
                 switch selectedTab {
                 case .home:
-                    HomeView()
+                    homeView
                 case .explore:
                     ExploreView()
                 case .profile:
