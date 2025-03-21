@@ -8,13 +8,6 @@
 import SwiftUI
 import MapKit
 
-extension CLLocationCoordinate2D {
-    static let newYork: Self = .init(
-        latitude: 40.730610,
-        longitude: -73.935242
-    )
-}
-
 
 struct HomeView: View {
     
@@ -27,34 +20,38 @@ struct HomeView: View {
     
     
     var body: some View {
-        Map(initialPosition: vm.mapPos) {
-            UserAnnotation()
+        GoogleMapView()
             
-            ForEach(locations) { loc in
-                if let latitude = Double(loc.latitude),
-                   let longitude = Double(loc.longitude)
-                {
-                    
-                    let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                    
-                    Annotation(
-                        loc.name,
-                        coordinate: coordinate
-                    ) {
-                        Image(systemName: "fork.knife.circle")
-                            .foregroundStyle(.orange)
-                            .onTapGesture {
-                                showDetails = true
-                                currentLocation = loc
-                            }
-                            .scaleEffect(2)
-                    }
-                }
-            }
-        }
-        .onMapCameraChange(frequency: .onEnd) { context in
-            vm.mapPos = .camera(context.camera)
-        }
+        
+        
+//        Map(initialPosition: vm.mapPos) {
+//            UserAnnotation()
+//            
+//            ForEach(locations) { loc in
+//                if let latitude = Double(loc.latitude),
+//                   let longitude = Double(loc.longitude)
+//                {
+//                    
+//                    let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//                    
+//                    Annotation(
+//                        loc.name,
+//                        coordinate: coordinate
+//                    ) {
+//                        Image(systemName: "fork.knife.circle")
+//                            .foregroundStyle(.orange)
+//                            .onTapGesture {
+//                                showDetails = true
+//                                currentLocation = loc
+//                            }
+//                            .scaleEffect(2)
+//                    }
+//                }
+//            }
+//        }
+//        .onMapCameraChange(frequency: .continuous) { context in
+//            vm.mapPos = .camera(context.camera)
+//        }
         .sheet(isPresented: $showDetails) {
             LocationDetailsModalView(location: $currentLocation, showDetails: $showDetails)
                 .presentationDetents([.medium])
