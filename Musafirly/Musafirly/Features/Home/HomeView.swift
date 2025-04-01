@@ -16,7 +16,7 @@ struct HomeView: View {
     let locations: [Location] = Location.mockLocations
     
     @State private var showDetails = false
-    @State private var currentLocation: Location = Location.mockLocations.first ?? Location(name: "Test name", latitude: "0", longitude: "0", address: "1346 67th Street")
+    @State private var currentLocation: Location = Location.mockLocations.first ?? Location(name: "Test name", coords: .init(latitude: 0, longitude: 0), address: "1346 67th Street")
     
     
     var body: some View {

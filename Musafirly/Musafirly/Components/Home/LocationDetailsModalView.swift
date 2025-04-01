@@ -25,5 +25,5 @@ struct LocationDetailsModalView: View {
 }
 
 #Preview {
-    LocationDetailsModalView(location: .constant(Location(name: "Test Name", latitude: "0", longitude: "0", address: "Test Address")), showDetails: .constant(true))
+    LocationDetailsModalView(location: .constant(Location(name: "Test Name", coords: .init(latitude: 0, longitude: 0), address: "Test Address")), showDetails: .constant(true))
 }
