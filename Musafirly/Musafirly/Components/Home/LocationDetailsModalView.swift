@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LocationDetailsModalView: View {
-    @Binding var location: Location
+    var location: Location
     @Binding var showDetails: Bool
     
     var body: some View {
@@ -25,5 +25,11 @@ struct LocationDetailsModalView: View {
 }
 
 #Preview {
-    LocationDetailsModalView(location: .constant(Location(name: "Test Name", coords: .init(latitude: 0, longitude: 0), address: "Test Address")), showDetails: .constant(true))
+    LocationDetailsModalView(
+        location: Location(
+            name: "Test Name",
+            coords: .newYork,
+            address: "Test Address"
+        ),
+        showDetails: .constant(true))
 }
