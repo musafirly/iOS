@@ -30,11 +30,13 @@ struct HomeMap: View {
             UserAnnotation()
                 .mapOverlayLevel(level: .aboveLabels)
             
-            ForEach(vm.markerLocations) { loc in
+            ForEach(vm.markerPlaces) { place in
                 
                 Annotation(
-                    loc.name,
-                    coordinate: .init(latitude: loc.latitude, longitude: loc.longitude)
+                    place.name,
+                    coordinate: .init(
+                        latitude: place.latitude,
+                        longitude: place.longitude)
                 ) {
                     ZStack {
                         
@@ -46,7 +48,7 @@ struct HomeMap: View {
                     }
                     .onTapGesture {
                         showDetails = true
-                        vm.currentLocation = loc
+                        vm.currentPlace = place
                     }
                 }
             
@@ -62,8 +64,8 @@ struct HomeMap: View {
         }
         .sheet(isPresented: $showDetails) {
             
-            LocationDetailsModalView(
-                location: vm.currentLocation,
+            PlaceDetailsModalView(
+                place: vm.currentPlace,
                 showDetails: $showDetails)
             .presentationDetents([
                 .fraction(0.99),

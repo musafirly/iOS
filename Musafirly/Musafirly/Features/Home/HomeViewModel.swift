@@ -15,9 +15,9 @@ class HomeViewModel: ObservableObject {
         centerCoordinate: .init(latitude: 40.7685, longitude: -73.9822),
         distance: 1500))
     
-    @Published var currentLocation: Location = .newYork
+    @Published var currentPlace: Place = .newYork
     
-    @Published var markerLocations: [Location] = []
+    @Published var markerPlaces: [Place] = Place.mockPlaces
     
     
     init() {
@@ -29,12 +29,12 @@ class HomeViewModel: ObservableObject {
         
         let baseUrl = URL(string: "https://api.musafirly.com/places/nearby")!
         
-        let urlWithLocation = baseUrl.appending(queryItems: [
-            .init(name: "lat", value: String(currentLocation.latitude)),
-            .init(name: "lon", value: String(currentLocation.longitude)),
+        let urlWithPlace = baseUrl.appending(queryItems: [
+            .init(name: "lat", value: String(currentPlace.latitude)),
+            .init(name: "lon", value: String(currentPlace.longitude)),
         ])
         
-        let task = URLSession.shared.dataTask(with: urlWithLocation) { (data, response, error) in
+        let task = URLSession.shared.dataTask(with: urlWithPlace) { (data, response, error) in
             if let error {
                 return print("\(error.localizedDescription)")
             }
@@ -52,14 +52,14 @@ class HomeViewModel: ObservableObject {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 
-                let decodedJsonLocations = try decoder.decode([Location].self, from: dataResponse)
+                let decodedJsonPlaces = try decoder.decode([Place].self, from: dataResponse)
                 
-                print("Decoded locations from Musafirly API: \(String(describing: decodedJsonLocations))")
+                print("Decoded places from Musafirly API: \(String(describing: decodedJsonPlaces))")
 
-                // Dispatch a closure to set markerLocations with the fetched nearby locations
+                // Dispatch a closure to set markerPlaces with the fetched nearby places
                 // Could just use async await to solve this, but this is more fun and allows slow fetches to not block map rendering.
                 DispatchQueue.main.async {
-                    self.markerLocations = decodedJsonLocations
+                    self.markerPlaces = decodedJsonPlaces
                 }
                 
             } catch {

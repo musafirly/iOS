@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct ExploreView: View {
-    let mockLocations: [Location] = Location.mockLocations
+    let places: [Place] = Place.mockPlaces
 
     
     var body: some View {
         VStack (alignment: .leading, spacing: 20) {
             CarouselSectionView(
-                locations: mockLocations,
+                places: places,
                 titleText: "Popular Near You")
             
             CarouselSectionView(
-                locations: mockLocations,
+                places: places,
                 titleText: "Your Favorites")
             
             Spacer()

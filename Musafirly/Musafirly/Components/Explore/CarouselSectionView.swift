@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CarouselSectionView: View {
-    let locations: [Location]
+    let places: [Place]
     let titleText: String
     
     
@@ -19,13 +19,13 @@ struct CarouselSectionView: View {
                 .font(.title)
                 .bold()
             
-            ForEach(locations) { loc in
-                Text(loc.name)
+            ForEach(places) { place in
+                Text(place.name)
             }
         }
     }
 }
 
 #Preview {
-    CarouselSectionView(locations: Location.mockLocations, titleText: "Test")
+    CarouselSectionView(places: Place.mockPlaces, titleText: "Test")
 }
