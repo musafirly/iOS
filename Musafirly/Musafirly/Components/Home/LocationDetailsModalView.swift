@@ -19,7 +19,7 @@ struct LocationDetailsModalView: View {
             
             Text(location.name)
             
-            Text(location.address)
+            Text(location.address ?? "No Address")
         }
     }
 }
@@ -28,7 +28,8 @@ struct LocationDetailsModalView: View {
     LocationDetailsModalView(
         location: Location(
             name: "Test Name",
-            coords: .newYork,
+            latitude: 0,
+            longitude: 0,
             address: "Test Address"
         ),
         showDetails: .constant(true))

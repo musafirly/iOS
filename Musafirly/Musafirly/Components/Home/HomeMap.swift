@@ -30,11 +30,11 @@ struct HomeMap: View {
             UserAnnotation()
                 .mapOverlayLevel(level: .aboveLabels)
             
-            ForEach(vm.locations) { loc in
+            ForEach(vm.markerLocations) { loc in
                 
                 Annotation(
                     loc.name,
-                    coordinate: loc.coords
+                    coordinate: .init(latitude: loc.latitude, longitude: loc.longitude)
                 ) {
                     ZStack {
                         

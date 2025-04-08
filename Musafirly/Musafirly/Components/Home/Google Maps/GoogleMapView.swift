@@ -11,7 +11,7 @@ import GoogleMaps
 // Source:  https://medium.com/@Rutik_Maraskolhe/understanding-google-maps-integration-in-swiftui-8b44c852f69a
 struct GoogleMapView: UIViewRepresentable {
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        
+        print("Updated UI View")
     }
     
     func makeCoordinator() -> Coordinator {
@@ -31,6 +31,9 @@ struct GoogleMapView: UIViewRepresentable {
         context.coordinator.locationManager.requestWhenInUseAuthorization()
         context.coordinator.locationManager.delegate = context.coordinator
         
+        let marker: GMSMarker = .init(position: .init(latitude: Location.newYork.latitude, longitude: Location.newYork.longitude))
+        marker.map = mapView
+        
         return mapView
     }
     
@@ -44,7 +47,13 @@ struct GoogleMapView: UIViewRepresentable {
         // Location manager detects new locations availble
 //        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
 //        {
-//            guard let location = locations.first else { return }
+//            guard var location = locations.first else { return }
+//            print("New Location: \(location)")
+//            
+//            #if targetEnvironment(simulator)
+//                let initialLocation = Location.mockLocations.first!
+//            location = .init(latitude: initialLocation.coords.latitude, longitude: initialLocation.coords.longitude)
+//            #endif
 //            
 //            // Set camera position to current location
 //            let zoom: Float = 18.0
@@ -66,12 +75,18 @@ struct GoogleMapView: UIViewRepresentable {
                 mapView?.settings.myLocationButton = true
                 
                 // Force unwrap - could be dangerous if location manager somehow hasn't retrieved a location yet
-                let location = locationManager.location!
+                var location = locationManager.location!
+                
+                // Direct map to mock locations in simulator instead of San Francisco's Union Square
+                #if targetEnvironment(simulator)
+                    let initialLocation = Location.mockLocations.first!
+                location = .init(latitude: initialLocation.coords.latitude, longitude: initialLocation.coords.longitude)
+                #endif
                 
                 let camera = GMSCameraPosition.camera(
                     withLatitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude,
-                    zoom: 30)
+                    zoom: 300.0)
                 
                 mapView?.animate(to: camera)
             }
