@@ -14,9 +14,7 @@ struct HomeView: View {
     
     
     var body: some View {
-        
         HomeMap(viewmodel: vm)
-        
     }
 }
 
