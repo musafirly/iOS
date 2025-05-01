@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-import CoreData
 import MapKit
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .home
+//    @AppStorage("theme") private var theme: ColorScheme = .light
     
     var homeView = HomeView(vm: .init())
-    
+
     
     var body: some View {
         ZStack {

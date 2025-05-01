@@ -12,12 +12,14 @@ import MapKit
 
 class HomeViewModel: ObservableObject {
     @Published var mapPos: MapCameraPosition = .camera(.init(
-        centerCoordinate: .init(latitude: 40.7685, longitude: -73.9822),
+        centerCoordinate: .init(
+            latitude: PlaceSummary.newYork.latitude,
+            longitude: PlaceSummary.newYork.longitude),
         distance: 1500))
     
-    @Published var currentPlace: Place = .newYork
+    @Published var currentPlace: PlaceSummary = .newYork
     
-    @Published var markerPlaces: [Place] = Place.mockPlaces
+    @Published var markerPlaces: [PlaceSummary] = []
     
     
     init() {
@@ -32,6 +34,8 @@ class HomeViewModel: ObservableObject {
         let urlWithPlace = baseUrl.appending(queryItems: [
             .init(name: "lat", value: String(currentPlace.latitude)),
             .init(name: "lon", value: String(currentPlace.longitude)),
+            .init(name: "limit", value: "100"),
+            .init(name: "radius", value: "10000")
         ])
         
         let task = URLSession.shared.dataTask(with: urlWithPlace) { (data, response, error) in
@@ -52,7 +56,11 @@ class HomeViewModel: ObservableObject {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 
-                let decodedJsonPlaces = try decoder.decode([Place].self, from: dataResponse)
+//                let json = try JSONSerialization.jsonObject(with: dataResponse, options: [])
+//                
+//                print("JSON: \(json)")
+                
+                let decodedJsonPlaces = try decoder.decode([PlaceSummary].self, from: dataResponse)
                 
                 print("Decoded places from Musafirly API: \(String(describing: decodedJsonPlaces))")
 

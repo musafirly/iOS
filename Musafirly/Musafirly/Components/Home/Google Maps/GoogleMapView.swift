@@ -31,7 +31,7 @@ struct GoogleMapView: UIViewRepresentable {
         context.coordinator.locationManager.requestWhenInUseAuthorization()
         context.coordinator.locationManager.delegate = context.coordinator
         
-        let marker: GMSMarker = .init(position: .init(latitude: Place.newYork.latitude, longitude: Place.newYork.longitude))
+        let marker: GMSMarker = .init(position: .init(latitude: PlaceSummary.newYork.latitude, longitude: PlaceSummary.newYork.longitude))
         marker.map = mapView
         
         return mapView
@@ -79,7 +79,7 @@ struct GoogleMapView: UIViewRepresentable {
                 
                 // Direct map to mock locations in simulator instead of San Francisco's Union Square
                 #if targetEnvironment(simulator)
-                    let initialLocation = Location.mockLocations.first!
+                    let initialLocation = PlaceSummary.mockPlaces.first!
                 location = .init(latitude: initialLocation.latitude, longitude: initialLocation.longitude)
                 #endif
                 
