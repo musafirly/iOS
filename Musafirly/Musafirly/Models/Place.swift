@@ -5,17 +5,20 @@
 //  Created by Anthony on 2/22/25.
 //
 
+import Foundation
 
 struct PlaceSummary: Identifiable, Decodable {
-    let id: String
+    var id: String = UUID().uuidString
+    
     let name: String
+    var description: String?
     let latitude: Double
     let longitude: Double
     var phone: String?
     var website: String?
-    var reviewCount: Int?
-    var reviewRating: Double?
-    var reviewsPerRating: [Double: Int]?
+    var reviewCount: Int = 0
+    var reviewRating: Double = 0
+    var reviewsPerRating: [Int: Double]?
     var thumbnailUrl: String?
     var openingHours: [String: [String]]?
     var priceRange: String?
