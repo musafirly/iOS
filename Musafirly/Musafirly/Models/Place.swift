@@ -11,7 +11,7 @@ struct PlaceSummary: Identifiable, Decodable {
     var id: String?
     
     let name: String
-    var description: String?
+    var description: String = ""
     let latitude: Double
     let longitude: Double
     var phone: String?
@@ -40,6 +40,7 @@ struct Place: Identifiable, Decodable {
     let images: [[String: String]]
     let categories: [String]
     let links: [[String: String]]
+    let reviews: [Review]
     
     
     
@@ -54,6 +55,7 @@ struct Place: Identifiable, Decodable {
         case images
         case categories
         case links
+        case reviews
 
         // Keys belonging to PlaceSummary, but are flattened in the JSON response from GetPlaceByID
         case name
@@ -91,13 +93,14 @@ struct Place: Identifiable, Decodable {
             { $0.count > 0 ? $0["name"] : nil }
         ) ?? []
         self.links = try container.decodeIfPresent([[String: String]].self, forKey: .links) ?? []
+        self.reviews = try container.decodeIfPresent([Review].self, forKey: .reviews) ?? []
         
 
         // Decode the PlaceSummary properties from the *same* top-level container
         // Note: Assuming the top-level 'id' is also intended to be the summary's 'id'
         let summaryID = try container.decode(String.self, forKey: .id) // Using the top-level ID for summary ID
         let name = try container.decode(String.self, forKey: .name)
-        let description = try container.decodeIfPresent(String.self, forKey: .description)
+        let description = try container.decodeIfPresent(String.self, forKey: .description) ?? "No Description"
         let latitude = try container.decode(Double.self, forKey: .latitude)
         let longitude = try container.decode(Double.self, forKey: .longitude)
         let phone = try container.decodeIfPresent(String.self, forKey: .phone)
@@ -118,7 +121,7 @@ struct Place: Identifiable, Decodable {
         self.summary = PlaceSummary(
             id: summaryID,
             name: name,
-            description: description,
+            description: description.isEmpty ? "No Description" : description,
             latitude: latitude,
             longitude: longitude,
             phone: phone,
@@ -136,7 +139,7 @@ struct Place: Identifiable, Decodable {
         )
     }
     
-    init (summary: PlaceSummary, owners: [Owner] = [], categories: [String] = [], images: [[String: String]] = [], links: [[String: String]] = []) {
+    init (summary: PlaceSummary, owners: [Owner] = [], categories: [String] = [], images: [[String: String]] = [], links: [[String: String]] = [], reviews: [Review] = []) {
         self.id = summary.id ?? "0"
         self.about = ""
         self.completeAddress = [:]
@@ -145,5 +148,6 @@ struct Place: Identifiable, Decodable {
         self.images = images
         self.categories = categories
         self.links = links
+        self.reviews = reviews
     }
 }
