@@ -10,50 +10,45 @@ import SwiftUI
 
 class PlaceDetailsModalViewModel: ObservableObject {
     @Published var isPresented: Bool = false
-    @Published var fullPlaceDetails: Place
+    @Published var fullPlaceDetails: Place = Place.defaultPlace
+    let placeId: String
+    
+    var fullAddress: String?
     
     init(placeId: String) {
-        fullPlaceDetails = Place.defaultPlace
-        
-        GetPlaceDetailsFor(id: placeId)
+        self.placeId = placeId
     }
     
     
-    func GetPlaceDetailsFor(id: String) {
+    @MainActor
+    func GetPlaceDetailsFor(id: String) async throws {
         
         let endpointUrl: URL = .init(string: "https://api.musafirly.com/places/\(id)")!
+
         
-        let task = URLSession.shared.dataTask(with: endpointUrl) { data, response, error in
-            
-            if let error {
-                return print("Error fetching place details for id: \(id) - \(error.localizedDescription)")
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                return print("Error fetching place details for id: \(id) - HTTP status code: \(String(describing: response))")
-            }
-            
-            guard data != nil else {
-                return print("No Data Received")
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                
-                let fetchedData = try decoder.decode(Place.self, from: mapResponse(response: (data!, response!) ))
-                
-                print("Place Details fetched successfully for id: \(id): \(fetchedData)")
-                
-                DispatchQueue.main.async {
-                    self.fullPlaceDetails = fetchedData
-                }
-            } catch {
-                print("Error decoding data for id: \(id) - \(error)")
-            }
+        print("Calling Musafirly API for place id \(id)")
+        
+        let (data, response) = try await URLSession.shared.data(from: endpointUrl)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+            return print("Server error: \(response.debugDescription)")
         }
         
-        task.resume()
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        let decodedPlaceDetails = try decoder.decode(Place.self, from: data)
+        
+        
+        self.fullPlaceDetails = decodedPlaceDetails
+        
+        if let addressDict = fullPlaceDetails.completeAddress {
+            let street = addressDict["street"]
+            let city = addressDict["city"]
+            let state = addressDict["state"]
+            
+            fullAddress = "\(street ?? ""), \(city ?? ""), \(state ?? "")"
+        }
     }
 }

@@ -12,10 +12,10 @@ struct HomeMap: View {
     @State private var showDetails: Bool = false
     
     init(viewmodel: HomeViewModel) {
-        self.vm = viewmodel
+        _vm = StateObject(wrappedValue: viewmodel)
     }
     
-    var vm: HomeViewModel
+    @StateObject var vm: HomeViewModel
     
     var markerGradient: LinearGradient = .init(
         stops: [
@@ -68,10 +68,10 @@ struct HomeMap: View {
                 showDetails: $showDetails)
             .presentationDetents([
                 .fraction(0.99),
-                .fraction(0.2),
                 .fraction(0.45),
                 ],
-                 selection: .constant(.fraction(0.45)))
+                 selection: .constant(.fraction(0.99)))
+            .presentationCornerRadius(30)
         }
     }
 }

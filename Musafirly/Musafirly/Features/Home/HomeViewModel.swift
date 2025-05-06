@@ -20,61 +20,35 @@ class HomeViewModel: ObservableObject {
     @Published var currentPlace: PlaceSummary = .newYork
     
     @Published var markerPlaces: [PlaceSummary] = []
-    
-    
-    init() {
-        FindNearbyRestaurants()
-    }
 
     
-    func FindNearbyRestaurants() {
+    @MainActor
+    func FindNearbyRestaurants() async throws {
         
         let baseUrl = URL(string: "https://api.musafirly.com/places/nearby")!
         
         let urlWithPlace = baseUrl.appending(queryItems: [
             .init(name: "lat", value: String(currentPlace.latitude)),
             .init(name: "lon", value: String(currentPlace.longitude)),
-            .init(name: "limit", value: "100"),
-            .init(name: "radius", value: "10000")
+            .init(name: "limit", value: "20"),
+            .init(name: "radius", value: "1000")
         ])
         
-        let task = URLSession.shared.dataTask(with: urlWithPlace) { (data, response, error) in
-            if let error {
-                return print("\(error.localizedDescription)")
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                return print("Server error: \(response!.debugDescription)")
-            }
-            
-            guard let dataResponse = data else {
-                return print("No Data Received")
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                
-//                let json = try JSONSerialization.jsonObject(with: dataResponse, options: [])
-//                
-//                print("JSON: \(json)")
-                
-                let decodedJsonPlaces = try decoder.decode([PlaceSummary].self, from: dataResponse)
-                
-                print("Decoded places from Musafirly API: \(String(describing: decodedJsonPlaces))")
-
-                // Dispatch a closure to set markerPlaces with the fetched nearby places
-                // Could just use async await to solve this, but this is more fun and allows slow fetches to not block map rendering.
-                DispatchQueue.main.async {
-                    self.markerPlaces = decodedJsonPlaces
-                }
-                
-            } catch {
-                print("Decoding Error")
-            }
+        print("Calling Musafirly API for nearby places...")
+        
+        let (data, response) = try await URLSession.shared.data(from: urlWithPlace)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+            return print("Server error: \(response.debugDescription)")
         }
         
-        task.resume()
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        let nearbyPlaces = try decoder.decode([PlaceSummary].self, from: data)
+        
+        
+        self.markerPlaces = nearbyPlaces
     }
 }

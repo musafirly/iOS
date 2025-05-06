@@ -10,90 +10,110 @@ import SwiftUI
 struct PlaceDetailsModalView: View {
     @Binding var showDetails: Bool
     
-    var vm: PlaceDetailsModalViewModel
+    @StateObject var vm: PlaceDetailsModalViewModel
     
     init(placeId: String, showDetails: Binding<Bool>) {
-        self.vm = .init(placeId: placeId)
+        _vm = StateObject(wrappedValue: .init(placeId: placeId))
         
         _showDetails = showDetails
     }
+
     
     var body: some View {
-        
-        GeometryReader { geometry in
-            let precomputedWidth = geometry.size.width
-            
-            VStack(alignment: .listRowSeparatorLeading) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        
-                        Text(vm.fullPlaceDetails.summary.name)
-                            .font(.title3)
-                        
-                        // Stars
-                        RatingView(
-                            rating: vm.fullPlaceDetails.summary.reviewRating,
-                            ratingsCount: vm.fullPlaceDetails.summary.reviewCount)
-                    }
+    
+        VStack {
+            HStack {
+                VStack(alignment: .leading) {
                     
-                    Spacer()
+                    Text(vm.fullPlaceDetails.summary.name)
+                        .font(.title3)
                     
-                    Button(action: { showDetails.toggle() }) {
-                        ZStack {
-                            Circle()
-                                .foregroundStyle(Color(UIColor.tertiarySystemBackground))
-                                .opacity(0.9)
-                            
-                            Image(systemName: "xmark")
-                                .foregroundStyle(Color.primary)
-                        }
-                    }
-                    .frame(
-                        width: 32,
-                        height: 32
-                    )
+                    // Stars
+                    RatingView(
+                        rating: vm.fullPlaceDetails.summary.reviewRating,
+                        ratingsCount: vm.fullPlaceDetails.summary.reviewCount)
                 }
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    
-                    // What I want to achieve is a section of the modal only for the image with a predefined height so that it doesn't push the text down
-                    // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
-                    Section {
+                Spacer()
+                
+                Button(action: { showDetails.toggle() }) {
+                    ZStack {
+                        Circle()
+                            .foregroundStyle(Color(UIColor.secondarySystemBackground))
+                            .opacity(0.9)
                         
-                        if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(Color.primary)
+                    }
+                }
+                .frame(
+                    width: 32,
+                    height: 32
+                )
+            }
+            
+            // Main information section
+            VStack(alignment: .leading, spacing: 8) {
+                
+                // What I want to achieve is a section of the modal only for the image with a predefined height so that it doesn't push the text down
+                // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
+                
+                if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
+                    
+                    AsyncImage(url: .init(string: imageUrl)) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity)
                             
-                            AsyncImage(url: .init(string: imageUrl)) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .frame(minWidth: precomputedWidth, maxWidth: precomputedWidth)
-                                        .fixedSize(horizontal: true, vertical: false)
-                                        .scaledToFit()
-                                case .failure(_):
-                                    
+                        case .failure(_):
+                            Image(systemName: "photo.on.rectangle.angled")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.gray)
+                            
+                        @unknown default:
+                            alert("Error", isPresented: .constant(true), actions: {
+                                Button(action: { showDetails = false } ) {
+                                    Text("Close")
                                 }
-                                
-                            }
-                            .border(.red, width: 2)
+                            })
                         }
                     }
-                    .imageScale(.small)
-                    
-                    
-                    
-                    Text(vm.fullPlaceDetails.completeAddress?["street"] ?? "No Address")
-                        .font(.headline)
-                    
-                    Text(vm.fullPlaceDetails.summary.description ?? "No Description")
-                        .font(.subheadline)
                 }
+            
+                
+                HStack {
+                    Image(systemName: "map")
+                        .frame(width: 16, height: 16)
+                    Text(vm.fullAddress ?? "No address")
+                }
+                .font(.headline)
+                
+                HStack {
+                    Image(systemName: "info")
+                        .frame(width: 16, height: 16)
+                    Text(vm.fullPlaceDetails.summary.description)
+                }
+                .font(.subheadline)
+                
             }
-            .padding(.horizontal)
-            .padding(.vertical, 16)
-            .border(.green, width: 2)
+            
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 24)
+        .task {
+            do {
+                try await vm.GetPlaceDetailsFor(id: vm.placeId)
+            } catch {
+                print("Error getting place details for details sheet")
+            }
         }
     }
 }
