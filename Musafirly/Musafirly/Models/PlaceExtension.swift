@@ -35,4 +35,15 @@ extension PlaceSummary {
         reviewRating: 5,
         thumbnailUrl: "https://offices.net/officeimages/12369_1.jpg"
     )
+    
+    static let defaultPlaceSummary: Self = .init(
+        name: "No Name",
+        latitude: 0,
+        longitude: 0)
+}
+
+extension Place {
+    static let defaultPlace: Self = .init(
+        summary: PlaceSummary.defaultPlaceSummary,
+        owners: [])
 }

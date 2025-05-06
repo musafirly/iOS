@@ -51,7 +51,6 @@ struct HomeMap: View {
                         vm.currentPlace = place
                     }
                 }
-            
             }
         }
         .mapControls() {
@@ -65,7 +64,7 @@ struct HomeMap: View {
         .sheet(isPresented: $showDetails) {
             
             PlaceDetailsModalView(
-                place: vm.currentPlace,
+                placeId: vm.currentPlace.id!,
                 showDetails: $showDetails)
             .presentationDetents([
                 .fraction(0.99),

@@ -8,8 +8,15 @@
 import SwiftUI
 
 struct PlaceDetailsModalView: View {
-    var place: PlaceSummary
     @Binding var showDetails: Bool
+    
+    var vm: PlaceDetailsModalViewModel
+    
+    init(placeId: String, showDetails: Binding<Bool>) {
+        self.vm = .init(placeId: placeId)
+        
+        _showDetails = showDetails
+    }
     
     var body: some View {
         
@@ -20,13 +27,13 @@ struct PlaceDetailsModalView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         
-                        Text(place.name)
+                        Text(vm.fullPlaceDetails.summary.name)
                             .font(.title3)
                         
                         // Stars
                         RatingView(
-                            rating: place.reviewRating,
-                            ratingsCount: place.reviewCount)
+                            rating: vm.fullPlaceDetails.summary.reviewRating,
+                            ratingsCount: vm.fullPlaceDetails.summary.reviewCount)
                     }
                     
                     Spacer()
@@ -53,27 +60,35 @@ struct PlaceDetailsModalView: View {
                     // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
                     Section {
                         
-                        AsyncImage(
-                            url: .init(string: place.thumbnailUrl ?? .fallbackImageUrl)
-                        ) { image in
-                            image
-                                .resizable()
-                                .frame(maxWidth: precomputedWidth)
-                                .scaledToFit()
-                        } placeholder: {
-                            ProgressView()
+                        if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
+                            
+                            AsyncImage(url: .init(string: imageUrl)) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .frame(minWidth: precomputedWidth, maxWidth: precomputedWidth)
+                                        .fixedSize(horizontal: true, vertical: false)
+                                        .scaledToFit()
+                                case .failure(_):
+                                    
+                                }
+                                
+                            }
+                            .border(.red, width: 2)
                         }
-                        .border(.red, width: 2)
                     }
-                    .imageScale(.medium)
+                    .imageScale(.small)
                     
                     
                     
-                    Text("No Address")
+                    Text(vm.fullPlaceDetails.completeAddress?["street"] ?? "No Address")
                         .font(.headline)
                     
-                    Text(place.description ?? "No Description")
-                        .font(.headline)
+                    Text(vm.fullPlaceDetails.summary.description ?? "No Description")
+                        .font(.subheadline)
                 }
             }
             .padding(.horizontal)
@@ -85,6 +100,6 @@ struct PlaceDetailsModalView: View {
 
 #Preview {
     PlaceDetailsModalView(
-        place: .newYork,
+        placeId: "a2981eeb-3679-4217-ae52-4cbb333df381",
         showDetails: .constant(true))
 }
