@@ -24,7 +24,7 @@ struct CustomTabBar: View {
             
             
             // Tab items
-            HStack(spacing: 0) {
+            HStack {
                 ForEach(tabs) { tab in
                     ZStack {
                         // Indicator
@@ -46,7 +46,7 @@ struct CustomTabBar: View {
             .padding(.horizontal, 60)
             .padding(.vertical, 5)
         }
-        .frame(height: 30)
+        .frame(height: 60)
     }
 }
 
