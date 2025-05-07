@@ -30,9 +30,14 @@ struct PlaceDetailsModalView: View {
                         .font(.title3)
                     
                     // Stars
-                    RatingView(
-                        rating: vm.fullPlaceDetails.summary.reviewRating,
-                        ratingsCount: vm.fullPlaceDetails.summary.reviewCount)
+                    HStack {
+                        
+                        Text(vm.fullPlaceDetails.categories.first ?? "Restaurant")
+                        
+                        RatingView(
+                            rating: vm.fullPlaceDetails.summary.reviewRating,
+                            ratingsCount: vm.fullPlaceDetails.summary.reviewCount)
+                    }
                 }
                 
                 Spacer()
@@ -96,10 +101,28 @@ struct PlaceDetailsModalView: View {
                     IconSection(iconSystemName: "map", labelText: vm.fullPlaceDetails.summary.name)
                         .font(.headline)
                     
-                    IconSection(iconSystemName: "info", labelText: vm.fullPlaceDetails.summary.description)
+                    
+                    if let description = vm.fullPlaceDetails.summary.description {
+                        
+                        IconSection(
+                            iconSystemName: "info",
+                            labelText: description)
                         .font(.subheadline)
+                    }
                     
-                    
+                    if let website = vm.fullPlaceDetails.summary.website {
+                        let url = website
+                            .trimmingPrefix("/url?q=")
+                            .split(separator: "&")[0]
+                            .split(separator: "%")[0]
+                        
+                        IconSection(
+                            iconSystemName: "text.page",
+                            labelText: String(url)
+                        )
+                        .font(.subheadline)
+
+                    }
                 }
             }
             
