@@ -21,6 +21,7 @@ struct PlaceDetailsModalView: View {
     
     var body: some View {
     
+        
         VStack {
             HStack {
                 VStack(alignment: .leading) {
@@ -53,55 +54,53 @@ struct PlaceDetailsModalView: View {
             }
             
             // Main information section
-            VStack(alignment: .leading, spacing: 8) {
+            ScrollView {
                 
-                // What I want to achieve is a section of the modal only for the image with a predefined height so that it doesn't push the text down
-                // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
-                
-                if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
+                VStack(alignment: .leading, spacing: 8) {
                     
-                    AsyncImage(url: .init(string: imageUrl)) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity)
-                            
-                        case .failure(_):
-                            Image(systemName: "photo.on.rectangle.angled")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.gray)
-                            
-                        @unknown default:
-                            alert("Error", isPresented: .constant(true), actions: {
-                                Button(action: { showDetails = false } ) {
-                                    Text("Close")
-                                }
-                            })
+                    // What I want to achieve is a section of the modal only for the image with a predefined height so that it doesn't push the text down
+                    // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
+                    
+                    if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
+                        //                if let imageUrl = "https://badurl.png" as? String {
+                        AsyncImage(url: .init(string: imageUrl)) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 250)
+                                    .frame(maxWidth: .infinity)
+                                
+                            case .failure(_):
+                                Image(systemName: "photo.on.rectangle.angled")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 250)
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(.gray)
+                                
+                            @unknown default:
+                                alert("Error", isPresented: .constant(true), actions: {
+                                    Button(action: { showDetails = false } ) {
+                                        Text("Close")
+                                    }
+                                })
+                            }
                         }
                     }
+                    
+                    
+                    IconSection(iconSystemName: "map", labelText: vm.fullPlaceDetails.summary.name)
+                        .font(.headline)
+                    
+                    IconSection(iconSystemName: "info", labelText: vm.fullPlaceDetails.summary.description)
+                        .font(.subheadline)
+                    
+                    
                 }
-            
-                
-                HStack {
-                    Image(systemName: "map")
-                        .frame(width: 16, height: 16)
-                    Text(vm.fullAddress ?? "No address")
-                }
-                .font(.headline)
-                
-                HStack {
-                    Image(systemName: "info")
-                        .frame(width: 16, height: 16)
-                    Text(vm.fullPlaceDetails.summary.description)
-                }
-                .font(.subheadline)
-                
             }
             
             Spacer()
