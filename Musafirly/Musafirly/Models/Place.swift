@@ -11,7 +11,7 @@ struct PlaceSummary: Identifiable, Decodable {
     var id: String?
     
     let name: String
-    var description: String = ""
+    var description: String?
     let latitude: Double
     let longitude: Double
     var phone: String?
@@ -100,7 +100,7 @@ struct Place: Identifiable, Decodable {
         // Note: Assuming the top-level 'id' is also intended to be the summary's 'id'
         let summaryID = try container.decode(String.self, forKey: .id) // Using the top-level ID for summary ID
         let name = try container.decode(String.self, forKey: .name)
-        let description = try container.decodeIfPresent(String.self, forKey: .description) ?? "No Description"
+        let description = try container.decodeIfPresent(String.self, forKey: .description)
         let latitude = try container.decode(Double.self, forKey: .latitude)
         let longitude = try container.decode(Double.self, forKey: .longitude)
         let phone = try container.decodeIfPresent(String.self, forKey: .phone)
@@ -121,7 +121,7 @@ struct Place: Identifiable, Decodable {
         self.summary = PlaceSummary(
             id: summaryID,
             name: name,
-            description: description.isEmpty ? "No Description" : description,
+            description: ((description?.isEmpty) != nil) ? nil : description,
             latitude: latitude,
             longitude: longitude,
             phone: phone,
