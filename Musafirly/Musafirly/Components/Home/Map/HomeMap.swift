@@ -19,9 +19,11 @@ struct HomeMap: View {
     var body: some View {
         
         Map(initialPosition: vm.mapPos) {
+            
             UserAnnotation()
                 .mapOverlayLevel(level: .aboveLabels)
         
+            
             ForEach(vm.markerPlaces) { place in
                 
                 Annotation(
@@ -70,6 +72,9 @@ struct HomeMap: View {
                 )
                 .presentationCornerRadius(30)
             }
+        }
+        .overlay() {
+            MapCenterIndicator(loading: vm.loadingNewPlaces)
         }
     }
 }

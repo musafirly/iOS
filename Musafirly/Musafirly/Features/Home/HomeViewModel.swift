@@ -24,6 +24,8 @@ class HomeViewModel: ObservableObject {
     @Published var markerPlaces: [PlaceSummary] = []
     @Published var mapError: IdentifiableError?
     
+    @Published var loadingNewPlaces: Bool = false
+    
     
     private var debounceTimer: Timer?
     private let debounceInterval: TimeInterval = 0.5
@@ -47,6 +49,9 @@ class HomeViewModel: ObservableObject {
         {
             
             debounceTimer?.invalidate()
+            
+            
+            self.loadingNewPlaces = true
             
             
             debounceTimer = Timer.scheduledTimer(
@@ -97,7 +102,8 @@ class HomeViewModel: ObservableObject {
         ])
         
         print("Calling Musafirly API for nearby places...")
-    
+        
+        self.loadingNewPlaces = true
         
         let (data, response) = try await URLSession.shared.data(from: urlWithPlace)
         
@@ -113,5 +119,7 @@ class HomeViewModel: ObservableObject {
         
         
         self.markerPlaces = nearbyPlaces
+        
+        self.loadingNewPlaces = false
     }
 }
