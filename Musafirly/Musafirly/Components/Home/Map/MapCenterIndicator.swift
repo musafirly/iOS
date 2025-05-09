@@ -12,17 +12,21 @@ struct MapCenterIndicator: View {
     
     var body: some View {
         
-        Circle()
-            .fill(Color.centerIndicatorOuter)
-            .frame(width: 16, height: 16)
-        
-        Circle()
-            .fill(loading ? Color.centerIndicatorInnerLoading : Color.centerIndicatorInner)
-            .frame(width: 10, height: 10)
-            .animation(
-                .spring(
-                    dampingFraction: 0.7),
-                value: loading)
+        Section {
+            
+            Circle()
+                .fill(Color.centerIndicatorOuter)
+                .frame(width: 16, height: 16)
+            
+            Circle()
+                .fill(loading ? Color.centerIndicatorInnerLoading : Color.centerIndicatorInner)
+                .frame(width: 10, height: 10)
+                .scaleEffect(loading ? 1.2 : 1)
+        }
+        .scaleEffect(loading ? 1.2 : 1)
+        .animation(
+            .spring(response: 0.4, dampingFraction: 0.6),
+            value: loading)
     }
 }
 
