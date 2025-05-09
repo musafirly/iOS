@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+
 struct PlaceDetailsModalView: View {
     @Binding var showDetails: Bool
     
+    // NOTE: Noticed an issue where the sheet will show the previous location's data before showing its own. Should reset the vm's current place to default on disappear.
     @StateObject var vm: PlaceDetailsModalViewModel
     
     init(placeId: String, showDetails: Binding<Bool>) {
@@ -61,13 +63,13 @@ struct PlaceDetailsModalView: View {
             // Main information section
             ScrollView {
                 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 16) {
                     
                     // What I want to achieve is a section of the modal only for the image with a predefined height so that it doesn't push the text down
                     // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
                     
                     if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
-                        //                if let imageUrl = "https://badurl.png" as? String {
+//                         if let imageUrl = "https://badurl.png" as? String {
                         AsyncImage(url: .init(string: imageUrl)) { phase in
                             switch phase {
                             case .empty:

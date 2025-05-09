@@ -17,24 +17,87 @@ class HomeViewModel: ObservableObject {
             longitude: PlaceSummary.newYork.longitude),
         distance: 1500))
     
-    @Published var currentPlace: PlaceSummary = .newYork
+    
+    @Published var selectedPlace: PlaceSummary?
+    @Published var showDetailsModal: Bool = false
     
     @Published var markerPlaces: [PlaceSummary] = []
+    @Published var mapError: IdentifiableError?
+    
+    
+    private var debounceTimer: Timer?
+    private let debounceInterval: TimeInterval = 0.5
+    
+    
+    deinit {
+        // Invalidate timer if view gets destroyed
+        debounceTimer?.invalidate()
+    }
 
+    
+    // Handle map changes and handle timer logic in the ViewModel.
+    func mapCameraDidChange(_ context: MapCameraUpdateContext) {
+        let oldCameraCenter = mapPos.camera?.centerCoordinate
+        
+        mapPos = .camera(context.camera)
+        
+        // Only fetch new locations if we moved positions, excluding zooming in or out.
+        if let newCameraCenter = mapPos.camera?.centerCoordinate,
+           oldCameraCenter != newCameraCenter
+        {
+            
+            debounceTimer?.invalidate()
+            
+            
+            debounceTimer = Timer.scheduledTimer(
+                withTimeInterval: debounceInterval,
+                repeats: false
+            ) { [weak self] timer in
+                // [weak self] avoids a Retain Cycle, which is when two selves are used within a closure, leading to a closure's self not being deallocated, causing a memory leak.
+                guard let self = self else {
+                    print("ViewModel self is nil when timer fired. Timer block exiting.")
+                    return
+                }
+                
+                print("Timer fired! Starting FindNearbyRestaurants()...")
+                
+                
+                Task { @MainActor in
+                    
+                    do {
+                        try await self.FindNearbyRestaurants()
+                        self.mapError = nil
+                    } catch let error {
+                        print("Error updating nearby restaurants on map: \(error)")
+                        
+                        self.mapError = IdentifiableError(error: error)
+                    }
+                }
+            }
+        }
+    }
+    
     
     @MainActor
     func FindNearbyRestaurants() async throws {
         
         let baseUrl = URL(string: "https://api.musafirly.com/places/nearby")!
         
+        let searchLocation = mapPos.camera?.centerCoordinate
+        
+        if searchLocation == nil {
+            return print("Error: Could not get current location from map.")
+        }
+        
         let urlWithPlace = baseUrl.appending(queryItems: [
-            .init(name: "lat", value: String(currentPlace.latitude)),
-            .init(name: "lon", value: String(currentPlace.longitude)),
+            .init(name: "lat", value: String(searchLocation!.latitude)),
+            .init(name: "lon", value: String(searchLocation!.longitude)),
             .init(name: "limit", value: "20"),
             .init(name: "radius", value: "1000")
         ])
         
         print("Calling Musafirly API for nearby places...")
+    
         
         let (data, response) = try await URLSession.shared.data(from: urlWithPlace)
         
