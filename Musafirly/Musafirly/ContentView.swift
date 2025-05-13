@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .home
 //    @AppStorage("theme") private var theme: ColorScheme = .light
     
-    var homeView = HomeView(vm: .init())
+    var homeView = HomeView()
 
     
     var body: some View {
@@ -29,8 +29,6 @@ struct ContentView: View {
                     homeView
                 case .explore:
                     ExploreView()
-                case .profile:
-                    ProfileView()
                 }
                 
                 Spacer()
@@ -44,4 +42,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(LocationManager())
 }

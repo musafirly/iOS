@@ -23,11 +23,14 @@ struct MusafirlyApp: App {
     let persistenceController = PersistenceController.shared
     
 //    @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
+    
+    @StateObject var locationManager: LocationManager = .init()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(locationManager)
         }
     }
 }

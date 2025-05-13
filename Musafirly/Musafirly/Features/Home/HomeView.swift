@@ -9,22 +9,72 @@ import SwiftUI
 
 
 struct HomeView: View {
+    @StateObject private var vm: HomeViewModel
+    @EnvironmentObject var locationManager: LocationManager
     
-    @StateObject var vm: HomeViewModel
-    
+    init() {
+        _vm = StateObject(wrappedValue: HomeViewModel())
+    }
     
     var body: some View {
-        HomeMap(viewmodel: vm)
-            .task {
-                do {
-                    try await vm.FindNearbyRestaurants()
-                } catch {
-                    print("Failed to find nearby restaurants in HomeView: \(error)")
+        
+        Group {
+            if locationManager.authorizationStatus == .authorizedWhenInUse ||
+               locationManager.authorizationStatus == .authorizedAlways {
+
+                HomeMap(vm)
+                    .task {
+                        if let coordinate = locationManager.lastKnownLocation {
+                             vm.mapPos = .camera(
+                                .init(centerCoordinate: coordinate, distance: 1500))
+
+                            
+                            do {
+                                try await vm.FindNearbyRestaurants()
+                                
+                                vm.mapError = nil
+                                
+                                print("Nearby restaurant fetching success.")
+                            } catch {
+                                print("Failed to find nearby restaurants in HomeView authorized task: \(error)")
+                                
+                                vm.mapError = IdentifiableError(error: error)
+                            }
+                        }
+                    }
+            } else if locationManager.authorizationStatus == .notDetermined {
+                EmptyView()
+                    .onAppear {
+                        print("Requesting location authorization")
+                        
+                        locationManager.checkLocationAuthorization()
+                    }
+
+            } else {
+                VStack(alignment: .center){
+                    Spacer()
+                    
+                    Text("Location access is required to show nearby places.")
+                        .padding()
+                    
+                    Button("Open Settings") {
+                        // Guide user to app settings to enable location access
+                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(settingsURL)
+                        }
+                    }
+                    
+                    Spacer()
                 }
             }
+        }
+        .onAppear {
+            locationManager.checkLocationAuthorization()
+        }
     }
 }
 
 #Preview {
-    HomeView(vm: .init())
+    HomeView()
+        .environmentObject(LocationManager())
 }

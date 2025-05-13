@@ -20,8 +20,8 @@ extension PlaceSummary {
 extension PlaceSummary {
     static let newYork: Self = .init(
         name: "New York",
-        latitude: PlaceSummary.mockPlaces.first?.latitude ?? 40.7678,
-        longitude: PlaceSummary.mockPlaces.first?.longitude ?? 73.9645,
+        latitude: 40.7678,
+        longitude: -73.9645,
         phone: "+1 (917) 555-1212",
         reviewRating: 3.5,
         thumbnailUrl: "https://media.istockphoto.com/id/1454217037/photo/statue-of-liberty-and-new-york-city-skyline-with-manhattan-financial-district-world-trade.jpg?s=612x612&w=0&k=20&c=6V54_qVlDfo59GLEdY2W8DOjLbbHTJ9y4AnJ58a3cis=",

@@ -9,16 +9,16 @@ import SwiftUI
 import MapKit
 
 struct HomeMap: View {
-    @StateObject var vm: HomeViewModel
+    @ObservedObject var vm: HomeViewModel
     
-    init(viewmodel: HomeViewModel) {
-        _vm = StateObject(wrappedValue: viewmodel)
+    init(_ viewmodel: HomeViewModel) {
+        _vm = ObservedObject(wrappedValue: viewmodel)
     }
 
     
     var body: some View {
         
-        Map(initialPosition: vm.mapPos) {
+        Map(position: $vm.mapPos) {
             
             UserAnnotation()
                 .mapOverlayLevel(level: .aboveLabels)
@@ -90,5 +90,5 @@ struct HomeMap: View {
 
 
 #Preview {
-    HomeMap(viewmodel: .init())
+    HomeMap(.init())
 }

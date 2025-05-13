@@ -12,6 +12,7 @@ import CoreLocation
 final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     
     @Published var lastKnownLocation: CLLocationCoordinate2D?
+    @Published var authorizationStatus: CLAuthorizationStatus?
     var manager = CLLocationManager()
     
     
@@ -20,11 +21,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
         manager.delegate = self
         manager.startUpdatingLocation()
         
+        authorizationStatus = manager.authorizationStatus
+        
         
         switch manager.authorizationStatus {
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
-            //The user cannot change this app’s status, possibly due to active restrictions such as parental controls being in place.
+        // The user cannot change this app’s status, possibly due to active restrictions such as parental controls being in place.
         case .restricted:
             print("Location restricted")
         case .denied:
