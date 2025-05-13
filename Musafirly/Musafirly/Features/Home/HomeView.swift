@@ -49,9 +49,8 @@ struct HomeView: View {
                         
                         locationManager.checkLocationAuthorization()
                     }
-
             } else {
-                VStack(alignment: .center){
+                VStack(alignment: .center) {
                     Spacer()
                     
                     Text("Location access is required to show nearby places.")
@@ -66,6 +65,7 @@ struct HomeView: View {
                     
                     Spacer()
                 }
+                .containerRelativeFrame(.horizontal, alignment: .top)
             }
         }
         .onAppear {
