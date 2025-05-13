@@ -76,6 +76,15 @@ struct HomeMap: View {
         .overlay() {
             MapCenterIndicator(loading: vm.loadingNewPlaces)
         }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged({ _ in
+                    if !vm.holdingScreen {
+                        vm.holdingScreen = true
+                    }
+                })
+                .onEnded({ _ in vm.holdingScreen = false })
+        )
     }
 }
 

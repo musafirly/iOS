@@ -26,9 +26,11 @@ class HomeViewModel: ObservableObject {
     
     @Published var loadingNewPlaces: Bool = false
     
+    @Published var holdingScreen: Bool = false
+    
     
     private var debounceTimer: Timer?
-    private let debounceInterval: TimeInterval = 0.5
+    private let debounceInterval: TimeInterval = 1
     
     
     deinit {
@@ -42,6 +44,12 @@ class HomeViewModel: ObservableObject {
         let oldCameraCenter = mapPos.camera?.centerCoordinate
         
         mapPos = .camera(context.camera)
+        
+        print(holdingScreen)
+        
+        if self.holdingScreen {
+            return
+        }
         
         // Only fetch new locations if we moved positions, excluding zooming in or out.
         if let newCameraCenter = mapPos.camera?.centerCoordinate,
