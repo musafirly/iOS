@@ -49,4 +49,9 @@ extension Place {
     static let defaultPlace: Self = .init(
         summary: PlaceSummary.defaultPlaceSummary,
         owners: [])
+    
+    static let mockPlaces: [Place] = [
+        Place(summary: .newYork),
+        Place(summary: .ZSOffices)
+    ]
 }

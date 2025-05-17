@@ -218,7 +218,7 @@ struct Place: Identifiable, Codable {
     }
     
     init (summary: PlaceSummary, owners: [Owner] = [], categories: [String] = [], images: [[String: String]] = [], links: [[String: String]] = [], reviews: [Review] = []) {
-        self.id = summary.id ?? "0"
+        self.id = summary.id
         self.about = ""
         self.completeAddress = [:]
         self.summary = summary
