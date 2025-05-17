@@ -7,10 +7,13 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
 
 class PlaceDetailsModalViewModel: ObservableObject {
     @Published var isPresented: Bool = false
     @Published var fullPlaceDetails: Place = Place.defaultPlace
+    @Published var isCached: Bool = false
+    
     let placeId: String
     
     var fullAddress: String?
@@ -19,14 +22,95 @@ class PlaceDetailsModalViewModel: ObservableObject {
         self.placeId = placeId
     }
     
+    func tryLoadCachedPlaceDetails(_ context: ModelContext) throws {
+        let predicate = BookmarkedPlace.searchForPlacePredicate(withPlaceId: placeId)
+        let fetchDescriptor = FetchDescriptor<BookmarkedPlace>(predicate: predicate)
+
+        do {
+            let cachedPlaceDetails: [BookmarkedPlace] = try context.fetch(fetchDescriptor)
+
+            guard let cachedPlace = cachedPlaceDetails.first else {
+                isCached = false
+                
+                print("Place is not cached.")
+                
+                return
+            }
+            
+            isCached = true
+            
+            // This is the result stemming from 5 hours of me banging my head against a wall trying to
+            //  properly save a custom struct (Place)'s properties using SwiftData, which I gave up on.
+            //  - Anthony
+            self.fullPlaceDetails = Place(
+                summary: PlaceSummary(
+                    id: cachedPlace.bookmarkId,
+                    name: cachedPlace.name,
+                    placeDescription: cachedPlace.placeDescription,
+                    latitude: cachedPlace.latitude,
+                    longitude: cachedPlace.longitude,
+                    phone: cachedPlace.phone,
+                    website: cachedPlace.website,
+                    reviewCount: cachedPlace.reviewCount,
+                    reviewRating: cachedPlace.reviewRating,
+                    reviewsPerRating: cachedPlace.reviewsPerRating,
+                    thumbnailUrl: cachedPlace.thumbnailUrl,
+                    openingHours: cachedPlace.openingHours,
+                    priceRange: cachedPlace.priceRange,
+                    timezone: cachedPlace.timezone,
+                    link: cachedPlace.link,
+                    popularTimes: cachedPlace.popularTimes,
+                    distanceMeters: cachedPlace.distanceMeters
+                ),
+                about: cachedPlace.about,
+                completeAddress: cachedPlace.completeAddress,
+                owners: cachedPlace.owners,
+                categories: cachedPlace.categories,
+                images: cachedPlace.images,
+                links: cachedPlace.links,
+                reviews: cachedPlace.reviews
+            )
+        } catch {
+            print("Error fetching cached place details: \(error)")
+        }
+    }
+    
+    
+    func saveAsBookmark(_ context: ModelContext) { // Accept context here
+        guard !isCached else {
+            print("Place is marked as cached.")
+            return
+        }
+        
+        print("Caching place with id \(placeId)")
+        
+        let bookmarkedPlace = BookmarkedPlace(fullPlaceDetails)
+        
+        context.insert(bookmarkedPlace)
+
+        isCached = true
+    }
+
+    func deleteBookmark(_ context: ModelContext) {
+         do {
+             print("Attempting to delete bookmark with id \(placeId)")
+
+             try context.delete(model: BookmarkedPlace.self, where: BookmarkedPlace.searchForPlacePredicate(withPlaceId: placeId))
+             
+             isCached = false
+         } catch {
+             print("Error deleting bookmark: \(error)")
+         }
+     }
+    
     
     @MainActor
-    func GetPlaceDetailsFor(id: String) async throws {
+    func fetchPlaceDetails() async throws {
         
-        let endpointUrl: URL = .init(string: "https://api.musafirly.com/places/\(id)")!
+        let endpointUrl: URL = .init(string: "https://api.musafirly.com/places/\(placeId)")!
 
         
-        print("Calling Musafirly API for place id \(id)")
+        print("Calling Musafirly API for place id \(placeId)")
         
         let (data, response) = try await URLSession.shared.data(from: endpointUrl)
         

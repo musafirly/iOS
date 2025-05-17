@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 
 struct PlaceDetailsModalView: View {
@@ -14,10 +15,26 @@ struct PlaceDetailsModalView: View {
     // NOTE: Noticed an issue where the sheet will show the previous location's data before showing its own. Should reset the vm's current place to default on disappear.
     @StateObject var vm: PlaceDetailsModalViewModel
     
+    @Environment(\.modelContext) private var modelContext: ModelContext
+    
     init(placeId: String, showDetails: Binding<Bool>) {
         _vm = StateObject(wrappedValue: .init(placeId: placeId))
         
         _showDetails = showDetails
+    }
+    
+    private func deleteAllBookmarkedPlaces() {
+        do {
+            let fetchDescriptor = FetchDescriptor<BookmarkedPlace>()
+            let bookmarkedPlaces = try modelContext.fetch(fetchDescriptor)
+            print("Deleting \(bookmarkedPlaces)")
+            for place in bookmarkedPlaces {
+                modelContext.delete(place)
+            }
+            print("Successfully deleted all BookmarkedPlace records.")
+        } catch {
+            print("Error deleting BookmarkedPlace records: \(error)")
+        }
     }
 
     
@@ -100,11 +117,13 @@ struct PlaceDetailsModalView: View {
                     }
                     
                     
+                    // Name
                     IconSection(iconSystemName: "map", labelText: vm.fullPlaceDetails.summary.name)
                         .font(.headline)
                     
                     
-                    if let description = vm.fullPlaceDetails.summary.description {
+                    // Description
+                    if let description = vm.fullPlaceDetails.summary.placeDescription {
                         
                         IconSection(
                             iconSystemName: "info",
@@ -112,19 +131,41 @@ struct PlaceDetailsModalView: View {
                         .font(.subheadline)
                     }
                     
-                    if let website = vm.fullPlaceDetails.summary.website {
-                        let url = website
-                            .trimmingPrefix("/url?q=")
-                            .split(separator: "&")[0]
-                            .split(separator: "%")[0]
-                        
-                        IconSection(
-                            iconSystemName: "text.page",
-                            labelText: String(url)
-                        )
-                        .font(.subheadline)
-
+                    // Website
+                    if let website = vm.fullPlaceDetails.summary.website,
+                       let url = URL(string: String(website.trimmingPrefix("/url?q=")))?.host() {
+                         IconSection(
+                             iconSystemName: "text.page",
+                             labelText: url
+                         )
+                         .font(.subheadline)
+                    } else if let link = vm.fullPlaceDetails.summary.link,
+                       let url = URL(string: link)?.host() {
+                         IconSection(
+                             iconSystemName: "link",
+                             labelText: url
+                         )
+                         .font(.subheadline)
+                     }
+                    
+                    
+                    // Bookmark Button
+                    Button(action: {
+                        // Pass the modelContext to the ViewModel's saving/deleting functions
+                        if vm.isCached {
+                            vm.deleteBookmark(modelContext)
+                        } else {
+                            vm.saveAsBookmark(modelContext)
+                        }
+                    } ) {
+                        HStack {
+                            Image(systemName: vm.isCached ? "bookmark.fill" : "bookmark")
+                            Text(vm.isCached ? "Bookmarked" : "Bookmark") // Change text based on state
+                        }
                     }
+                    .tint(Color(UIColor.secondarySystemBackground))
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.roundedRectangle(radius: 20))
                 }
             }
             
@@ -133,10 +174,25 @@ struct PlaceDetailsModalView: View {
         .padding(.horizontal)
         .padding(.vertical, 24)
         .task {
+            
+//            deleteAllBookmarkedPlaces()
+            
             do {
-                try await vm.GetPlaceDetailsFor(id: vm.placeId)
+                try vm.tryLoadCachedPlaceDetails(modelContext)
             } catch {
-                print("Error getting place details for details sheet")
+                print("Error loading cached place details for details sheet: \(error)")
+            }
+
+            if !vm.isCached {
+                print("Place not cached/loaded, fetching from API.")
+                
+                do {
+                    try await vm.fetchPlaceDetails()
+                } catch {
+                    print("Error getting place details for details sheet: \(error)")
+                }
+            } else {
+                 print("Place found in cache or already loaded from previous state.")
             }
         }
     }

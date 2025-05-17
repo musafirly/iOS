@@ -13,7 +13,8 @@ struct ContentView: View {
 //    @AppStorage("theme") private var theme: ColorScheme = .light
     
     var homeView = HomeView()
-
+    
+    var yes = print(URL.applicationSupportDirectory.path(percentEncoded: false))
     
     var body: some View {
         ZStack {

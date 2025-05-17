@@ -20,7 +20,7 @@ struct CarouselSectionView: View {
                 .bold()
             
             ForEach(places) { place in
-                Text(place.name)
+                Text(place.summary.name)
             }
         }
     }

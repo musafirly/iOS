@@ -8,7 +8,9 @@
 import Foundation
 
 struct PlaceSummary: Identifiable, Codable {
-    var id: String
+    var id: String { placeId }
+    
+    var placeId: String
     
     let name: String
     var placeDescription: String?
@@ -28,7 +30,7 @@ struct PlaceSummary: Identifiable, Codable {
     var distanceMeters: Double?
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case placeId = "id"
         case name
         case placeDescription = "description"
         case latitude
@@ -50,7 +52,7 @@ struct PlaceSummary: Identifiable, Codable {
     init(from decoder: Decoder) throws {
          let container = try decoder.container(keyedBy: CodingKeys.self)
 
-         self.id = try container.decode(String.self, forKey: .id)
+         self.placeId = try container.decode(String.self, forKey: .placeId)
          self.name = try container.decode(String.self, forKey: .name)
          self.placeDescription = try container.decodeIfPresent(String.self, forKey: .placeDescription)
          self.latitude = try container.decode(Double.self, forKey: .latitude)
@@ -89,7 +91,7 @@ struct PlaceSummary: Identifiable, Codable {
         popularTimes: [String: [String: Int]]? = nil,
         distanceMeters: Double? = nil
     ) {
-        self.id = id
+        self.placeId = id
         self.name = name
         self.placeDescription = placeDescription
         self.latitude = latitude
@@ -177,7 +179,6 @@ struct Place: Identifiable, Codable {
         self.reviews = try container.decodeIfPresent([Review].self, forKey: .reviews) ?? []
         
 
-//        let summaryID = try container.decode(String.self, forKey: .id)
         let name = try container.decode(String.self, forKey: .name)
         let description = try container.decodeIfPresent(String.self, forKey: .placeDescription)
         let latitude = try container.decode(Double.self, forKey: .latitude)
@@ -197,7 +198,7 @@ struct Place: Identifiable, Codable {
 
 
         self.summary = PlaceSummary(
-            id: self.id,
+            id: id,
             name: name,
             placeDescription: ((description?.isEmpty) != nil) ? nil : description,
             latitude: latitude,
@@ -217,10 +218,19 @@ struct Place: Identifiable, Codable {
         )
     }
     
-    init (summary: PlaceSummary, owners: [Owner] = [], categories: [String] = [], images: [[String: String]] = [], links: [[String: String]] = [], reviews: [Review] = []) {
+    init(
+        summary: PlaceSummary,
+        about: String? = nil,
+        completeAddress: [String: String]? = [:],
+        owners: [Owner] = [],
+        categories: [String] = [],
+        images: [[String: String]] = [],
+        links: [[String: String]] = [],
+        reviews: [Review] = []
+    ) {
         self.id = summary.id
-        self.about = ""
-        self.completeAddress = [:]
+        self.about = about
+        self.completeAddress = completeAddress
         self.summary = summary
         self.owners = owners
         self.images = images
@@ -232,7 +242,7 @@ struct Place: Identifiable, Codable {
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
-
+        try container.encode(summary.id, forKey: .id)
         try container.encode(summary.name, forKey: .name)
         try container.encodeIfPresent(summary.placeDescription, forKey: .placeDescription)
         try container.encode(summary.latitude, forKey: .latitude)

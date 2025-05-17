@@ -7,22 +7,12 @@
 
 import SwiftUI
 import UIKit
-//import GoogleMaps
+import SwiftData
 
-//class AppDelegate: NSObject, UIApplicationDelegate {
-//
-//  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-//    // Override point for customization after application launch.
-//    GMSServices.provideAPIKey("AIzaSyDwyLzPH0PC-Sq9TJavTI5A1UJ32Knw-eo")
-//    return true
-//  }
-//}
 
 @main
 struct MusafirlyApp: App {
     let persistenceController = PersistenceController.shared
-    
-//    @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
     
     @StateObject var locationManager: LocationManager = .init()
 
@@ -32,5 +22,6 @@ struct MusafirlyApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(locationManager)
         }
+        .modelContainer(for: BookmarkedPlace.self, isAutosaveEnabled: true)
     }
 }
