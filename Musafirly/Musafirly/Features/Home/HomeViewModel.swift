@@ -45,8 +45,6 @@ class HomeViewModel: ObservableObject {
         
         mapPos = .camera(context.camera)
         
-        print(holdingScreen)
-        
         if self.holdingScreen {
             return
         }
@@ -71,8 +69,6 @@ class HomeViewModel: ObservableObject {
                     print("ViewModel self is nil when timer fired. Timer block exiting.")
                     return
                 }
-                
-                print("Timer fired! Starting FindNearbyRestaurants()...")
                 
                 
                 Task { @MainActor in

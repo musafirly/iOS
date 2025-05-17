@@ -62,7 +62,7 @@ struct HomeMap: View {
             if let place = vm.selectedPlace {
             
                 PlaceDetailsModalView(
-                    placeId: place.id!,
+                    placeId: place.id,
                     showDetails: $vm.showDetailsModal)
                 .presentationDetents([
                     .fraction(0.99),
