@@ -12,7 +12,7 @@ import SwiftData
 @Model
 class FavoritePlace {
     @Attribute(.unique)
-    var bookmarkId: String
+    var favoriteId: String
     
     
     var name: String
@@ -47,7 +47,7 @@ class FavoritePlace {
         self.favoriteDate = .now
         
         self.name = place.summary.name
-        self.bookmarkId = place.summary.placeId
+        self.favoriteId = place.summary.placeId
         self.placeDescription = place.summary.placeDescription
         self.latitude = place.summary.latitude
         self.longitude = place.summary.longitude
@@ -77,7 +77,7 @@ class FavoritePlace {
         withPlaceId: String
     ) -> Predicate<FavoritePlace> {
         return #Predicate<FavoritePlace> { model in
-            model.bookmarkId == withPlaceId
+            model.favoriteId == withPlaceId
         }
     }
 }

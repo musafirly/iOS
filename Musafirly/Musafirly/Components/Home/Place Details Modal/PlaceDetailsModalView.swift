@@ -22,20 +22,6 @@ struct PlaceDetailsModalView: View {
         
         _showDetails = showDetails
     }
-    
-    private func deleteAllBookmarkedPlaces() {
-        do {
-            let fetchDescriptor = FetchDescriptor<FavoritePlace>()
-            let bookmarkedPlaces = try modelContext.fetch(fetchDescriptor)
-            print("Deleting \(bookmarkedPlaces)")
-            for place in bookmarkedPlaces {
-                modelContext.delete(place)
-            }
-            print("Successfully deleted all BookmarkedPlace records.")
-        } catch {
-            print("Error deleting BookmarkedPlace records: \(error)")
-        }
-    }
 
     
     var body: some View {
@@ -149,21 +135,24 @@ struct PlaceDetailsModalView: View {
                      }
                     
                     
-                    // Bookmark Button
+                    // Favorite Button
                     Button(action: {
-                        // Pass the modelContext to the ViewModel's saving/deleting functions
+                        
                         if vm.isCached {
-                            vm.deleteBookmark(modelContext)
+                            vm.removeFavorite(modelContext)
                         } else {
-                            vm.saveAsBookmark(modelContext)
+                            vm.saveFavorite(modelContext)
                         }
                     } ) {
                         HStack {
-                            Image(systemName: vm.isCached ? "bookmark.fill" : "bookmark")
-                            Text(vm.isCached ? "Bookmarked" : "Bookmark") // Change text based on state
+                            Image(systemName: vm.isCached ? "heart.fill" : "heart")
+                                .foregroundStyle(Color.primary)
+                            
+                            Text("Favorite")
+                                .foregroundStyle(Color.primary)
                         }
                     }
-                    .tint(Color(UIColor.secondarySystemBackground))
+                    .tint(Color.favorite)
                     .buttonStyle(.borderedProminent)
                     .buttonBorderShape(.roundedRectangle(radius: 20))
                 }
@@ -175,24 +164,24 @@ struct PlaceDetailsModalView: View {
         .padding(.vertical, 24)
         .task {
             
-//            deleteAllBookmarkedPlaces()
-            
             do {
                 try vm.tryLoadCachedPlaceDetails(modelContext)
             } catch {
                 print("Error loading cached place details for details sheet: \(error)")
             }
 
-            if !vm.isCached {
-                print("Place not cached/loaded, fetching from API.")
-                
-                do {
-                    try await vm.fetchPlaceDetails()
-                } catch {
-                    print("Error getting place details for details sheet: \(error)")
-                }
-            } else {
+            guard !vm.isCached else {
                  print("Place found in cache or already loaded from previous state.")
+                
+                return
+            }
+            
+            print("Place not cached/loaded, fetching from API.")
+            
+            do {
+                try await vm.fetchPlaceDetails()
+            } catch {
+                print("Error getting place details for details sheet: \(error)")
             }
         }
     }

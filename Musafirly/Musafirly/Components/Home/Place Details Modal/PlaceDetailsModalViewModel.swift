@@ -44,7 +44,7 @@ class PlaceDetailsModalViewModel: ObservableObject {
             //  - Anthony
             self.fullPlaceDetails = Place(
                 summary: PlaceSummary(
-                    id: cachedPlace.bookmarkId,
+                    id: cachedPlace.favoriteId,
                     name: cachedPlace.name,
                     placeDescription: cachedPlace.placeDescription,
                     latitude: cachedPlace.latitude,
@@ -76,30 +76,30 @@ class PlaceDetailsModalViewModel: ObservableObject {
     }
     
     
-    func saveAsBookmark(_ context: ModelContext) { // Accept context here
+    func saveFavorite(_ context: ModelContext) { // Accept context here
         guard !isCached else {
-            print("Place is marked as cached.")
+            print("Place \(placeId) is marked as cached.")
             return
         }
         
         print("Caching place with id \(placeId)")
         
-        let bookmarkedPlace = FavoritePlace(fullPlaceDetails)
+        let favoritedPlace = FavoritePlace(fullPlaceDetails)
         
-        context.insert(bookmarkedPlace)
+        context.insert(favoritedPlace)
 
         isCached = true
     }
 
-    func deleteBookmark(_ context: ModelContext) {
+    func removeFavorite(_ context: ModelContext) {
          do {
-             print("Attempting to delete bookmark with id \(placeId)")
+             print("Attempting to delete favorite with id \(placeId)")
 
              try context.delete(model: FavoritePlace.self, where: FavoritePlace.searchForPlacePredicate(withPlaceId: placeId))
              
              isCached = false
          } catch {
-             print("Error deleting bookmark: \(error)")
+             print("Error deleting favorite: \(error)")
          }
      }
     
