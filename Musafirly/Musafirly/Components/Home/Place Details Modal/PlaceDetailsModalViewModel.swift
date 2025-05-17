@@ -23,11 +23,11 @@ class PlaceDetailsModalViewModel: ObservableObject {
     }
     
     func tryLoadCachedPlaceDetails(_ context: ModelContext) throws {
-        let predicate = BookmarkedPlace.searchForPlacePredicate(withPlaceId: placeId)
-        let fetchDescriptor = FetchDescriptor<BookmarkedPlace>(predicate: predicate)
+        let predicate = FavoritePlace.searchForPlacePredicate(withPlaceId: placeId)
+        let fetchDescriptor = FetchDescriptor<FavoritePlace>(predicate: predicate)
 
         do {
-            let cachedPlaceDetails: [BookmarkedPlace] = try context.fetch(fetchDescriptor)
+            let cachedPlaceDetails: [FavoritePlace] = try context.fetch(fetchDescriptor)
 
             guard let cachedPlace = cachedPlaceDetails.first else {
                 isCached = false
@@ -84,7 +84,7 @@ class PlaceDetailsModalViewModel: ObservableObject {
         
         print("Caching place with id \(placeId)")
         
-        let bookmarkedPlace = BookmarkedPlace(fullPlaceDetails)
+        let bookmarkedPlace = FavoritePlace(fullPlaceDetails)
         
         context.insert(bookmarkedPlace)
 
@@ -95,7 +95,7 @@ class PlaceDetailsModalViewModel: ObservableObject {
          do {
              print("Attempting to delete bookmark with id \(placeId)")
 
-             try context.delete(model: BookmarkedPlace.self, where: BookmarkedPlace.searchForPlacePredicate(withPlaceId: placeId))
+             try context.delete(model: FavoritePlace.self, where: FavoritePlace.searchForPlacePredicate(withPlaceId: placeId))
              
              isCached = false
          } catch {

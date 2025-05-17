@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class BookmarkedPlace {
+class FavoritePlace {
     @Attribute(.unique)
     var bookmarkId: String
     
@@ -41,10 +41,10 @@ class BookmarkedPlace {
     var links: [[String: String]]
     var reviews: [Review]
     
-    var bookmarkDate: Date
+    var favoriteDate: Date
     
     init(_ place: Place) {
-        self.bookmarkDate = .now
+        self.favoriteDate = .now
         
         self.name = place.summary.name
         self.bookmarkId = place.summary.placeId
@@ -75,8 +75,8 @@ class BookmarkedPlace {
     
     static func searchForPlacePredicate(
         withPlaceId: String
-    ) -> Predicate<BookmarkedPlace> {
-        return #Predicate<BookmarkedPlace> { model in
+    ) -> Predicate<FavoritePlace> {
+        return #Predicate<FavoritePlace> { model in
             model.bookmarkId == withPlaceId
         }
     }

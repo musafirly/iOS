@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-struct ExploreView: View {
-    let places: [Place] = Place.mockPlaces
 
+struct ExploreView: View {
+    @StateObject private var vm: ExploreViewModel
+
+    init() {
+        _vm = StateObject(wrappedValue: .init())
+    }
     
     var body: some View {
         VStack (alignment: .leading, spacing: 20) {
             CarouselSectionView(
-                places: places,
-                titleText: "Popular Near You")
-            
-            CarouselSectionView(
-                places: places,
+                places: vm.favoritedPlaces,
                 titleText: "Your Favorites")
             
             Spacer()

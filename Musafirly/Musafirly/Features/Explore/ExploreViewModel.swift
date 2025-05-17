@@ -9,15 +9,19 @@ import SwiftUI
 import SwiftData
 
 class ExploreViewModel: ObservableObject {
-    @Published var bookmarkedPlaces: [BookmarkedPlace] = []
+    @Published var favoritedPlaces: [Place] = []
     
     init() {
-        fetchBookmarkedPlaces()
+        fetchFavoritedPlaces()
     }
     
-    func fetchBookmarkedPlaces() {
-        self.bookmarkedPlaces = Query(
-            sort: \BookmarkedPlace.bookmarkDate,
+    func fetchFavoritedPlaces() {
+        let queriedPlaces = Query(
+            sort: \FavoritePlace.favoriteDate,
             order: .forward).wrappedValue
+        
+//        self.favoritedPlaces = queriedPlaces.map({ favorite in
+//            
+//        })
     }
 }

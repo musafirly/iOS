@@ -22,6 +22,6 @@ struct MusafirlyApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(locationManager)
         }
-        .modelContainer(for: BookmarkedPlace.self, isAutosaveEnabled: true)
+        .modelContainer(for: FavoritePlace.self, isAutosaveEnabled: true)
     }
 }

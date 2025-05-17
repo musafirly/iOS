@@ -25,7 +25,7 @@ struct PlaceDetailsModalView: View {
     
     private func deleteAllBookmarkedPlaces() {
         do {
-            let fetchDescriptor = FetchDescriptor<BookmarkedPlace>()
+            let fetchDescriptor = FetchDescriptor<FavoritePlace>()
             let bookmarkedPlaces = try modelContext.fetch(fetchDescriptor)
             print("Deleting \(bookmarkedPlaces)")
             for place in bookmarkedPlaces {
