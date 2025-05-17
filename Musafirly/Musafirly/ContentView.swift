@@ -14,8 +14,6 @@ struct ContentView: View {
     
     var homeView = HomeView()
     
-    var yes = print(URL.applicationSupportDirectory.path(percentEncoded: false))
-    
     var body: some View {
         ZStack {
             VStack (alignment: .leading) {

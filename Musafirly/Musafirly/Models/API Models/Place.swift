@@ -142,7 +142,7 @@ struct Place: Identifiable, Codable {
 
         // Keys belonging to PlaceSummary, but are flattened in the JSON response from GetPlaceByID
         case name
-        case placeDescription
+        case placeDescription = "description"
         case latitude
         case longitude
         case phone
@@ -200,7 +200,7 @@ struct Place: Identifiable, Codable {
         self.summary = PlaceSummary(
             id: id,
             name: name,
-            placeDescription: ((description?.isEmpty) != nil) ? nil : description,
+            placeDescription: (description == nil || description!.isEmpty) ? nil : description,
             latitude: latitude,
             longitude: longitude,
             phone: phone,
