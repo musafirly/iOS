@@ -7,96 +7,86 @@
 
 import SwiftUI
 
-struct CarouselPlaceCard: View {
+struct CarouselPlaceCard<Content>: View where Content : View {
     let place: Place
+    let imageHeight: CGFloat
+    
+    let content: Content?
+    
+    init(
+        place: Place,
+        imageHeight: CGFloat
+    ) where Content == EmptyView {
+        self.place = place
+        self.imageHeight = imageHeight
+        self.content = nil
+    }
+    
+    /// Creates a card with extra Views below the normal text.
+    init(
+        place: Place,
+        imageHeight: CGFloat,
+        @ViewBuilder extraCardView: () -> Content
+    ) {
+        self.place = place
+        self.imageHeight = imageHeight
+        
+        self.content = extraCardView()
+    }
     
     var body: some View {
-        VStack(alignment: .center) {
-            HStack {
-                VStack(alignment: .leading) {
-                    
-                    Text(place.summary.name)
-                        .font(.title3)
-                    
-                    // Stars
-                    HStack {
-                        
-                        Text(place.categories.first ?? "Restaurant")
-                        
-                        RatingView(
-                            rating: place.summary.reviewRating,
-                            ratingsCount: place.summary.reviewCount)
-                    }
-                }
-            }
-            
-            // Main information section
-            ScrollView {
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    
-                    if let imageUrl = place.summary.thumbnailUrl {
-                        AsyncImage(url: .init(string: imageUrl)) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 250)
-                                    .frame(maxWidth: .infinity)
-                                
-                            case .failure(_):
-                                Image(systemName: "photo.on.rectangle.angled")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 250)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundColor(.gray)
-                                
-                            @unknown default:
-                                var _ = print("Error loading image")
-                            }
+        VStack(alignment: .leading, spacing: 8) {
+            if let imageUrl = place.summary.thumbnailUrl {
+                Group {
+                    AsyncImage(url: .init(string: imageUrl)) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                        case .success(let image):
+                            image
+                                .flexibleImage(imageHeight)
+                            
+                        case .failure(_):
+                            Image(systemName: "photo.on.rectangle.angled")
+                                .flexibleImage(imageHeight)
+                                .foregroundColor(.gray)
+                            
+                        @unknown default:
+                            var _ = print("Unknown Error in CarouselPlaceCard")
+                            EmptyView()
                         }
                     }
-                    
-                    
-                    IconSection(iconSystemName: "map", labelText: place.summary.name)
-                        .font(.headline)
-                    
-                    
-                    if let description = place.summary.placeDescription {
-                        
-                        IconSection(
-                            iconSystemName: "info",
-                            labelText: description)
-                        .font(.subheadline)
-                    }
-                    
-                    if let website = place.summary.website {
-                        let url = website
-                            .trimmingPrefix("/url?q=")
-                            .split(separator: "&")[0]
-                            .split(separator: "%")[0]
-                        
-                        IconSection(
-                            iconSystemName: "text.page",
-                            labelText: String(url)
-                        )
-                        .font(.subheadline)
-
-                    }
                 }
+                .frame(maxWidth: .infinity)
             }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                
+                Text(place.summary.name)
+                    .font(.headline)
+                
+                Text(place.categories.first ?? "Restaurant")
+                    .font(.subheadline)
+                
+                Spacer()
+                
+                content
+            }
+            .padding(8)
+            .lineLimit(1)
             
             Spacer()
         }
-        .padding(.horizontal)
-        .padding(.vertical, 24)
+        .background(Color(UIColor.tertiarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(
+            color: Color.black.opacity(0.1),
+            radius: 5,
+            x: 0,
+            y: 5)
     }
 }
 
 #Preview {
-    CarouselPlaceCard(place: Place.defaultPlace)
+    CarouselPlaceCard(place: Place.defaultPlace, imageHeight: 150)
 }
