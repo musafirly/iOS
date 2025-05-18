@@ -62,6 +62,8 @@ struct PlaceDetailsModalView: View {
                     height: 32
                 )
             }
+            .padding(.horizontal)
+            
             
             // Main information section
             ScrollView {
@@ -72,95 +74,94 @@ struct PlaceDetailsModalView: View {
                     // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
                     
                     if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
-//                         if let imageUrl = "https://badurl.png" as? String {
-                        AsyncImage(url: .init(string: imageUrl)) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 250)
-                                    .frame(maxWidth: .infinity)
-                                
-                            case .failure(_):
-                                Image(systemName: "photo.on.rectangle.angled")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 250)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundColor(.gray)
-                                
-                            @unknown default:
-                                alert("Error", isPresented: .constant(true), actions: {
-                                    Button(action: { showDetails = false } ) {
-                                        Text("Close")
-                                    }
-                                })
+                        Group {
+                            
+                            AsyncImage(url: .init(string: imageUrl)) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                case .success(let image):
+                                    image
+                                        .flexibleImage()
+                                        .frame(maxWidth: .infinity)
+                                    
+                                case .failure(_):
+                                    Image(systemName: "photo.on.rectangle.angled")
+                                        .flexibleImage()
+                                    //                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(.gray)
+                                    
+                                @unknown default:
+                                    alert("Error", isPresented: .constant(true), actions: {
+                                        Button(action: { showDetails = false } ) {
+                                            Text("Close")
+                                        }
+                                    })
+                                }
                             }
                         }
+                        .frame(maxWidth: .infinity)
                     }
                     
-                    
-                    // Name
-                    IconSection(iconSystemName: "map", labelText: vm.fullPlaceDetails.summary.name)
-                        .font(.headline)
-                    
-                    
-                    // Description
-                    if let description = vm.fullPlaceDetails.summary.placeDescription {
+                    VStack(alignment: .leading, spacing: 16) {
                         
-                        IconSection(
-                            iconSystemName: "info",
-                            labelText: description)
-                        .font(.subheadline)
-                    }
-                    
-                    // Website
-                    if let website = vm.fullPlaceDetails.summary.website,
-                       let url = URL(string: String(website.trimmingPrefix("/url?q=")))?.host() {
-                         IconSection(
-                             iconSystemName: "text.page",
-                             labelText: url
-                         )
-                         .font(.subheadline)
-                    } else if let link = vm.fullPlaceDetails.summary.link,
-                       let url = URL(string: link)?.host() {
-                         IconSection(
-                             iconSystemName: "link",
-                             labelText: url
-                         )
-                         .font(.subheadline)
-                     }
-                    
-                    
-                    // Favorite Button
-                    Button(action: {
+                        // Name
+                        IconSection(iconSystemName: "map", labelText: vm.fullPlaceDetails.summary.name)
+                            .font(.headline)
                         
-                        if vm.isCached {
-                            vm.removeFavorite(modelContext)
-                        } else {
-                            vm.saveFavorite(modelContext)
-                        }
-                    } ) {
-                        HStack {
-                            Image(systemName: vm.isCached ? "heart.fill" : "heart")
-                                .foregroundStyle(Color.primary)
+                        
+                        // Description
+                        if let description = vm.fullPlaceDetails.summary.placeDescription {
                             
-                            Text("Favorite")
-                                .foregroundStyle(Color.primary)
+                            IconSection(
+                                iconSystemName: "info",
+                                labelText: description)
+                            .font(.subheadline)
                         }
+                        
+                        // Website
+                        if let website = vm.fullPlaceDetails.summary.website,
+                           let url = URL(string: String(website.trimmingPrefix("/url?q=")))?.host() {
+                            IconSection(
+                                iconSystemName: "text.page",
+                                labelText: url
+                            )
+                            .font(.subheadline)
+                        } else if let link = vm.fullPlaceDetails.summary.link,
+                                  let url = URL(string: link)?.host() {
+                            IconSection(
+                                iconSystemName: "link",
+                                labelText: url
+                            )
+                            .font(.subheadline)
+                        }
+                        
+                        
+                        // Favorite Button
+                        Button(action: {
+                            
+                            if vm.isCached {
+                                vm.removeFavorite(modelContext)
+                            } else {
+                                vm.saveFavorite(modelContext)
+                            }
+                        } ) {
+                            HStack {
+                                Image(systemName: vm.isCached ? "heart.fill" : "heart")
+                                    .foregroundStyle(Color.primary)
+                                
+                                Text(vm.isCached ? "Favorited" : "Favorite")
+                                    .foregroundStyle(Color.primary)
+                            }
+                        }
+                        .tint(Color.favorite)
+                        .buttonStyle(.borderedProminent)
+                        .buttonBorderShape(.roundedRectangle(radius: 20))
                     }
-                    .tint(Color.favorite)
-                    .buttonStyle(.borderedProminent)
-                    .buttonBorderShape(.roundedRectangle(radius: 20))
+                    .padding(.horizontal)
                 }
             }
-            
-            Spacer()
         }
-        .padding(.horizontal)
         .padding(.vertical, 24)
         .task {
             
@@ -176,9 +177,10 @@ struct PlaceDetailsModalView: View {
                 return
             }
             
-            print("Place not cached/loaded, fetching from API.")
             
             do {
+                print("Place not cached/loaded, fetching from API.")
+                
                 try await vm.fetchPlaceDetails()
             } catch {
                 print("Error getting place details for details sheet: \(error)")

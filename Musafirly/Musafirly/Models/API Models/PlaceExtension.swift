@@ -39,10 +39,12 @@ extension PlaceSummary {
     )
     
     static let defaultPlaceSummary: Self = .init(
-        id: "0",
-        name: "No Name",
+        id: "420dfbe3-ba2a-42da-8ca5-b70af0e665a2",
+        name: "Example Restaurant",
         latitude: 0,
-        longitude: 0)
+        longitude: 0,
+        thumbnailUrl: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrPXeWiDg_skeGJpM1WK4XiU-LdIR-MRTGSk0FBSpvBPrCgWlItNZV5uvBAFoBdMHFqiIZteWv2aC-iFyqqDkpQUjQdMWzRYT4pSx_E60_ziUDbGtAVeM-LL2uZeCom4H0TcmQQdQ=w408-h240-k-no-pi0-ya249-ro-0-fo100"
+    )
 }
 
 extension Place {

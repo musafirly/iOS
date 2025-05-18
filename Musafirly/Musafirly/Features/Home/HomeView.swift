@@ -30,7 +30,6 @@ struct HomeView: View {
                             vm.mapPos = .camera(
                                 .init(centerCoordinate: coordinate, distance: 1500))
 
-                            print(vm.markerPlaces.count)
                             guard vm.markerPlaces.count == 0 else { return }
                             
                             do {
