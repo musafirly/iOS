@@ -12,7 +12,8 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .home
 //    @AppStorage("theme") private var theme: ColorScheme = .light
     
-    var homeView = HomeView()
+    @StateObject private var homeViewModel = HomeViewModel()
+    @StateObject private var exploreViewModel = ExploreViewModel()
     
     var body: some View {
         ZStack {
@@ -25,9 +26,9 @@ struct ContentView: View {
                 
                 switch selectedTab {
                 case .home:
-                    homeView
+                    HomeView(homeViewModel)
                 case .explore:
-                    ExploreView()
+                    ExploreView(exploreViewModel)
                 }
                 
                 Spacer()

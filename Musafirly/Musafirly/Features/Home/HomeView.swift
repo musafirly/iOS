@@ -9,11 +9,11 @@ import SwiftUI
 
 
 struct HomeView: View {
-    @StateObject private var vm: HomeViewModel
-    @EnvironmentObject var locationManager: LocationManager
+    @ObservedObject private var vm: HomeViewModel
+    @EnvironmentObject private var locationManager: LocationManager
     
-    init() {
-        _vm = StateObject(wrappedValue: HomeViewModel())
+    init(_ viewmodel: HomeViewModel) {
+        _vm = ObservedObject(wrappedValue: viewmodel)
     }
     
     var body: some View {
@@ -25,9 +25,13 @@ struct HomeView: View {
                 HomeMap(vm)
                     .task {
                         if let coordinate = locationManager.lastKnownLocation {
-                             vm.mapPos = .camera(
+                            
+                            
+                            vm.mapPos = .camera(
                                 .init(centerCoordinate: coordinate, distance: 1500))
 
+                            print(vm.markerPlaces.count)
+                            guard vm.markerPlaces.count == 0 else { return }
                             
                             do {
                                 try await vm.FindNearbyRestaurants()
@@ -75,6 +79,6 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(.init())
         .environmentObject(LocationManager())
 }

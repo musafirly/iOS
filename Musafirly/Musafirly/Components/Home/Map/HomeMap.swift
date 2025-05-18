@@ -66,9 +66,9 @@ struct HomeMap: View {
                     showDetails: $vm.showDetailsModal)
                 .presentationDetents([
                     .fraction(0.99),
-                    .fraction(0.45),
+                    .fraction(0.55),
                 ],
-                    selection: .constant(.fraction(0.45))
+                    selection: .constant(.fraction(0.55))
                 )
                 .presentationCornerRadius(30)
             }
