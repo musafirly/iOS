@@ -58,6 +58,7 @@ struct CarouselPlaceCard<Content>: View where Content : View {
                     }
                 }
                 .frame(maxWidth: .infinity)
+                .frame(height: imageHeight)
             }
             
             VStack(alignment: .leading, spacing: 4) {
