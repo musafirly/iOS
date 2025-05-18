@@ -10,9 +10,9 @@ import SwiftUI
 import SwiftData
 
 class PlaceDetailsModalViewModel: ObservableObject {
-    @Published var isPresented: Bool = false
     @Published var fullPlaceDetails: Place = Place.defaultPlace
     @Published var isCached: Bool = false
+    @Published var isLoading: Bool = true
     
     let placeId: String
     
