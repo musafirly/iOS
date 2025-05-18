@@ -10,6 +10,7 @@ import SwiftData
 
 class ExploreViewModel: ObservableObject {
     @Published var favoritedPlaces: [Place] = []
+    @Published var favoritedPlacesDates: [Date] = []
 
     
     func fetchFavoritedPlaces(_ context: ModelContext) throws {
@@ -52,8 +53,18 @@ class ExploreViewModel: ObservableObject {
                     reviews: favorite.reviews
                 )
             })
+            
+            self.favoritedPlacesDates = queriedPlaces.map({ favorite in
+                favorite.favoriteDate
+            })
         } catch {
             print("Error fetching favorites in explore page: \(error)")
         }
+    }
+    
+    func getZippedFavoritesAndDateStrings() -> [(Place, String)] {
+        return zip(favoritedPlaces, favoritedPlacesDates).map({
+            ($0, "Favorited on \($1.formatted(date: .abbreviated, time: .omitted))")
+        })
     }
 }

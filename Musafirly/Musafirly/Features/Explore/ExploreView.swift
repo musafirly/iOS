@@ -19,11 +19,12 @@ struct ExploreView: View {
     
     var body: some View {
         VStack (alignment: .leading, spacing: 20) {
-            CarouselSectionView(places: vm.favoritedPlaces, titleText: "Your Favorites")
+            CarouselSectionView(
+                placesWithExtraLabels: vm.getZippedFavoritesAndDateStrings(),
+                titleText: "Your Favorites")
             
             Spacer()
         }
-        .padding(.horizontal)
         .onAppear() {
             do {
                 print("Retrieving favorite restaurants for explore page...")
