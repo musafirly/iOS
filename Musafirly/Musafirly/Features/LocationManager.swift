@@ -9,6 +9,8 @@
 import Foundation
 import CoreLocation
 
+
+// Adapted from https://medium.com/@desilio/getting-user-location-with-swiftui-1f79d23c2321
 final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     
     @Published var lastKnownLocation: CLLocationCoordinate2D?

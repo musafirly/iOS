@@ -28,20 +28,20 @@ class HomeViewModel: ObservableObject {
     
     @Published var holdingScreen: Bool = false
     
-    private var debounceTimer: Timer?
-    private let debounceInterval: TimeInterval = 1
+//    private var debounceTimer: Timer?
+//    private let debounceInterval: TimeInterval = 1
 
     
     
     deinit {
         // Invalidate timer if view gets destroyed
-        debounceTimer?.invalidate()
+//        debounceTimer?.invalidate()
     }
 
     
     // Handle map changes and handle timer logic in the ViewModel.
     func mapCameraDidChange(_ context: MapCameraUpdateContext) {
-        let oldCameraCenter = mapPos.camera?.centerCoordinate
+//        let oldCameraCenter = mapPos.camera?.centerCoordinate
         
         mapPos = .camera(context.camera)
         
@@ -50,40 +50,40 @@ class HomeViewModel: ObservableObject {
         }
         
         // Only fetch new locations if we moved positions, excluding zooming in or out.
-        if let newCameraCenter = mapPos.camera?.centerCoordinate,
-           oldCameraCenter != newCameraCenter
-        {
-            
-            debounceTimer?.invalidate()
-            
-            
-            self.loadingNewPlaces = true
-            
-            
-            debounceTimer = Timer.scheduledTimer(
-                withTimeInterval: debounceInterval,
-                repeats: false
-            ) { [weak self] timer in
-                // [weak self] avoids a Retain Cycle, which is when two selves are used within a closure, leading to a closure's self not being deallocated, causing a memory leak.
-                guard let self = self else {
-                    print("ViewModel self is nil when timer fired. Timer block exiting.")
-                    return
-                }
-                
-                
-                Task { @MainActor in
-                    
-                    do {
-                        try await self.FindNearbyRestaurants()
-                        self.mapError = nil
-                    } catch let error {
-                        print("Error updating nearby restaurants on map: \(error)")
-                        
-                        self.mapError = IdentifiableError(error: error)
-                    }
-                }
-            }
-        }
+//        if let newCameraCenter = mapPos.camera?.centerCoordinate,
+//           oldCameraCenter != newCameraCenter
+//        {
+//            
+//            debounceTimer?.invalidate()
+//            
+//            
+//            self.loadingNewPlaces = true
+//            
+//            
+//            debounceTimer = Timer.scheduledTimer(
+//                withTimeInterval: debounceInterval,
+//                repeats: false
+//            ) { [weak self] timer in
+//                // [weak self] avoids a Retain Cycle, which is when two selves are used within a closure, leading to a closure's self not being deallocated, causing a memory leak.
+//                guard let self = self else {
+//                    print("ViewModel self is nil when timer fired. Timer block exiting.")
+//                    return
+//                }
+//                
+//                
+//                Task { @MainActor in
+//                    
+//                    do {
+//                        try await self.FindNearbyRestaurants()
+//                        self.mapError = nil
+//                    } catch let error {
+//                        print("Error updating nearby restaurants on map: \(error)")
+//                        
+//                        self.mapError = IdentifiableError(error: error)
+//                    }
+//                }
+//            }
+//        }
     }
     
     
@@ -125,5 +125,7 @@ class HomeViewModel: ObservableObject {
         self.markerPlaces = nearbyPlaces
         
         self.loadingNewPlaces = false
+        
+        print("Nearby restaurant fetching success.")
     }
 }

@@ -21,23 +21,20 @@ struct HomeView: View {
         Group {
             if locationManager.authorizationStatus == .authorizedWhenInUse ||
                locationManager.authorizationStatus == .authorizedAlways {
-
-                HomeMap(vm)
+                
+                ZStack(alignment: .topTrailing) {
+                    HomeMap(vm)
                     .task {
                         if let coordinate = locationManager.lastKnownLocation {
-                            
-                            
                             vm.mapPos = .camera(
                                 .init(centerCoordinate: coordinate, distance: 1500))
-
+                            
                             guard vm.markerPlaces.count == 0 else { return }
                             
                             do {
                                 try await vm.FindNearbyRestaurants()
                                 
                                 vm.mapError = nil
-                                
-                                print("Nearby restaurant fetching success.")
                             } catch {
                                 print("Failed to find nearby restaurants in HomeView authorized task: \(error)")
                                 
@@ -45,6 +42,10 @@ struct HomeView: View {
                             }
                         }
                     }
+                    
+                    SearchNearbyLocationButton(vm)
+                        .offset(x: 0, y: 50)
+                }
             } else if locationManager.authorizationStatus == .notDetermined {
                 EmptyView()
                     .onAppear {

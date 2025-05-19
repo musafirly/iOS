@@ -40,9 +40,10 @@ struct HomeMap: View {
                 }
             }
         }
-        .mapControls() {
+        .mapControls {
             MapUserLocationButton()
             MapCompass()
+            MapScaleView()
         }
         .mapStyle(.standard(pointsOfInterest: .excludingAll))
         .onMapCameraChange(frequency: .onEnd) { context in
