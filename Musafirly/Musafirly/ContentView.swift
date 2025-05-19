@@ -17,19 +17,17 @@ struct ContentView: View {
     
     var body: some View {
         
-        ZStack {
-            VStack (alignment: .leading) {
-                switch selectedTab {
-                case .home:
-                    HomeView(homeViewModel)
-                case .explore:
-                    ExploreView(exploreViewModel)
-                }
-                
-                Spacer()
-                
-                CustomTabBar(selectedTab: $selectedTab)
+        VStack (alignment: .leading) {
+            switch selectedTab {
+            case .home:
+                HomeView(homeViewModel)
+            case .explore:
+                ExploreView(exploreViewModel)
             }
+            
+            Spacer()
+            
+            CustomTabBar(selectedTab: $selectedTab)
         }
     }
 }
