@@ -150,10 +150,10 @@ struct PlaceDetailsModalView: View {
                             } ) {
                                 HStack {
                                     Image(systemName: vm.isCached ? "heart.fill" : "heart")
-                                        .foregroundStyle(Color.primary)
+                                        .foregroundStyle(Color.white)
                                     
                                     Text(vm.isCached ? "Favorited" : "Favorite")
-                                        .foregroundStyle(Color.primary)
+                                        .foregroundStyle(Color.white)
                                 }
                             }
                             .tint(Color.favorite)
