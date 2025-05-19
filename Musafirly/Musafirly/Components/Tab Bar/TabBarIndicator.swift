@@ -7,8 +7,9 @@
 
 import SwiftUI
 
+
 struct TabBarIndicator: View {
-    let tabIndicatorYOffset: CGFloat = -40
+    let tabIndicatorYOffset: CGFloat = -35
     
     var body: some View {
         Group {
@@ -20,11 +21,11 @@ struct TabBarIndicator: View {
                     x: 0,
                     y: tabIndicatorYOffset)
             
-            // Blur for a subtle glow effect
+            
             Circle()
                 .fill(Color.accentColor.opacity(0.4))
                 .frame(width: 70, height: 70)
-                .blur(radius: 25)
+                .blur(radius: 15)
         }
     }
 }
