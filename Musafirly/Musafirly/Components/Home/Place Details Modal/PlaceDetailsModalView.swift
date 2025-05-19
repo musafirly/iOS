@@ -42,6 +42,7 @@ struct PlaceDetailsModalView: View {
                             ratingsCount: vm.fullPlaceDetails.summary.reviewCount)
                     }
                 }
+                .lineLimit(1)
                 
                 Spacer()
                 
@@ -140,25 +141,13 @@ struct PlaceDetailsModalView: View {
                             
                             
                             // Favorite Button
-                            Button(action: {
-                                
+                            FavoriteButton(isFavorited: $vm.isCached) {
                                 if vm.isCached {
                                     vm.removeFavorite(modelContext)
                                 } else {
                                     vm.saveFavorite(modelContext)
                                 }
-                            } ) {
-                                HStack {
-                                    Image(systemName: vm.isCached ? "heart.fill" : "heart")
-                                        .foregroundStyle(Color.white)
-                                    
-                                    Text(vm.isCached ? "Favorited" : "Favorite")
-                                        .foregroundStyle(Color.white)
-                                }
                             }
-                            .tint(Color.favorite)
-                            .buttonStyle(.borderedProminent)
-                            .buttonBorderShape(.roundedRectangle(radius: 20))
                         }
                         .padding(.horizontal)
                     }
