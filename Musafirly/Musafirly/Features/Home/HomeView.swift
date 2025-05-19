@@ -22,7 +22,7 @@ struct HomeView: View {
             if locationManager.authorizationStatus == .authorizedWhenInUse ||
                locationManager.authorizationStatus == .authorizedAlways {
                 
-                ZStack(alignment: .topTrailing) {
+                ZStack(alignment: .bottomTrailing) {
                     HomeMap(vm)
                     .task {
                         if let coordinate = locationManager.lastKnownLocation {
@@ -44,7 +44,6 @@ struct HomeView: View {
                     }
                     
                     SearchNearbyLocationButton(vm)
-                        .offset(x: 0, y: 50)
                 }
             } else if locationManager.authorizationStatus == .notDetermined {
                 EmptyView()

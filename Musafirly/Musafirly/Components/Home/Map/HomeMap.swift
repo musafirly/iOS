@@ -41,7 +41,6 @@ struct HomeMap: View {
             }
         }
         .mapControls {
-            MapUserLocationButton()
             MapCompass()
             MapScaleView()
         }

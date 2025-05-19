@@ -28,12 +28,19 @@ struct SearchNearbyLocationButton: View {
                 }
             }
         }) {
-            Image(systemName: "magnifyingglass")
+            HStack{
+                
+                Image(systemName: "magnifyingglass")
+                Text("Scan nearby")
+            }
+            .padding(.vertical, 4)
+            .padding(.horizontal, 8)
         }
-        .frame(width: 42, height: 42)
+        .frame(height: 42)
         .background(Color.mapButton)
         .clipShape(RoundedRectangle(cornerRadius: 7))
-        .padding(6)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 10)
         .disabled(vm.loadingNewPlaces)
     }
 }

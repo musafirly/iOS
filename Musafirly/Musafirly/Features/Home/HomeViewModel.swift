@@ -102,7 +102,7 @@ class HomeViewModel: ObservableObject {
             .init(name: "lat", value: String(searchLocation!.latitude)),
             .init(name: "lon", value: String(searchLocation!.longitude)),
             .init(name: "limit", value: "20"),
-            .init(name: "radius", value: "1000")
+            .init(name: "radius", value: "500")
         ])
         
         print("Calling Musafirly API for nearby places...")
