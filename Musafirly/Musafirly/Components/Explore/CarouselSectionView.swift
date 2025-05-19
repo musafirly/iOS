@@ -58,7 +58,7 @@ struct CarouselSectionView<Content>: View where Content : View {
                     .padding(.horizontal, 16)
                 
                 ScrollView(.horizontal) {
-                    HStack(spacing: 8) {
+                    LazyHStack(alignment: .top, spacing: 8) {
                         ForEach(Array(places.enumerated()), id: \.offset) { index, place in
                             CarouselPlaceCard(
                                 place: place,
