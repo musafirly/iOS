@@ -7,32 +7,18 @@
 
 import SwiftUI
 
-struct CarouselPlaceCard<Content>: View where Content : View {
+struct CarouselPlaceCard: View {
     let place: Place
     let imageHeight: CGFloat
-    
-    let content: Content?
     
     init(
         place: Place,
         imageHeight: CGFloat
-    ) where Content == EmptyView {
-        self.place = place
-        self.imageHeight = imageHeight
-        self.content = nil
-    }
-    
-    /// Creates a card with extra Views below the normal text.
-    init(
-        place: Place,
-        imageHeight: CGFloat,
-        @ViewBuilder extraCardView: () -> Content
     ) {
         self.place = place
         self.imageHeight = imageHeight
-        
-        self.content = extraCardView()
     }
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -70,8 +56,6 @@ struct CarouselPlaceCard<Content>: View where Content : View {
                     .font(.subheadline)
                 
                 Spacer()
-                
-                content
             }
             .padding(8)
             .lineLimit(1)

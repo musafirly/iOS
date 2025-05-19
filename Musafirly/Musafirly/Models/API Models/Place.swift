@@ -113,6 +113,7 @@ struct PlaceSummary: Identifiable, Codable {
 
 
 struct Place: Identifiable, Codable {
+    
     var id: String
     
     let summary: PlaceSummary

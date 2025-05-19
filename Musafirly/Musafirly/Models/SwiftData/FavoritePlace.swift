@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class FavoritePlace {
+class FavoritePlace: Identifiable {
     @Attribute(.unique)
     var favoriteId: String
     

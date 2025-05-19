@@ -10,20 +10,15 @@ import MapKit
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .home
-//    @AppStorage("theme") private var theme: ColorScheme = .light
+    //    @AppStorage("theme") private var theme: ColorScheme = .light
     
     @StateObject private var homeViewModel = HomeViewModel()
     @StateObject private var exploreViewModel = ExploreViewModel()
     
     var body: some View {
+        
         ZStack {
             VStack (alignment: .leading) {
-                if selectedTab != .home {
-                    HeaderView(selectedTab: $selectedTab)
-                        .animation(.none, value: selectedTab)
-                        .padding(.bottom, 8)
-                }
-                
                 switch selectedTab {
                 case .home:
                     HomeView(homeViewModel)

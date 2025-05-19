@@ -18,22 +18,25 @@ struct ExploreView: View {
     }
     
     var body: some View {
-        VStack (alignment: .leading, spacing: 20) {
-            CarouselSectionView(
-                placesWithExtraLabels: vm.getZippedFavoritesAndDateStrings(),
-                titleText: "Your Favorites")
-            
-            Spacer()
-        }
-        .onAppear() {
-            do {
-                print("Retrieving favorite restaurants for explore page...")
-                
-                try vm.fetchFavoritedPlaces(modelContext)
-            } catch {
-                print("Could not get favorites: \(error)")
+        NavigationStack {
+            VStack (alignment: .leading, spacing: 20) {
+                    CarouselFavoriteSection(
+                        favoritePlaces: vm.favoritedPlaces,
+                        titleText: "Your Favorites")
+                    
+                    Spacer()
+            }
+            .onAppear() {
+                do {
+                    print("Retrieving favorite restaurants for explore page...")
+                    
+                    try vm.fetchFavoritedPlaces(modelContext)
+                } catch {
+                    print("Could not get favorites: \(error)")
+                }
             }
         }
+        .navigationTitle("Explore")
     }
 }
 
