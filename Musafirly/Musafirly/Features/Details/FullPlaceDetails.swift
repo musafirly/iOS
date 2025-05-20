@@ -49,7 +49,7 @@ struct FullPlaceDetails: View {
                         VStack(alignment: .leading, spacing: 16) {
                             
                             if let halalScore = vm.place.summary.halalScore,
-                                halalScore > 0.7 {
+                                halalScore >= 0.7 {
                                 HalalBadge()
                                     .frame(width: 150)
                             }

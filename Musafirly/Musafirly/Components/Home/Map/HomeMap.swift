@@ -32,7 +32,7 @@ struct HomeMap: View {
                         latitude: place.latitude,
                         longitude: place.longitude)
                 ) {
-                    MarkerView()
+                    MarkerView(isHalal: place.halalScore ?? 0.0 >= 0.7)
                         .onTapGesture {
                             vm.showDetailsModal = true
                             vm.selectedPlace = place
