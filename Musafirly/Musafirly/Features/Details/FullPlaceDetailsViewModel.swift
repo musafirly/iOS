@@ -16,7 +16,7 @@ class FullPlaceDetailsViewModel: ObservableObject {
     
     @Published var place: Place = Place.defaultPlace
     
-    let placeId: String
+    private let placeId: String
     
     init(placeId: String) {
         self.placeId = placeId

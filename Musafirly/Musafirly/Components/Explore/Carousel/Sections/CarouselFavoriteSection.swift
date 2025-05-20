@@ -59,5 +59,5 @@ struct CarouselFavoriteSection: View {
 }
 
 #Preview {
-    CarouselSectionView(places: Place.mockPlaces, titleText: "Test")
+    CarouselFavoriteSection(favoritePlaces: [], titleText: "Test")
 }

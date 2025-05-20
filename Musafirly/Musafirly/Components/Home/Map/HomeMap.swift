@@ -90,6 +90,8 @@ struct HomeMap: View {
         .navigationDestination(isPresented: $vm.showFullDetails) {
             if let selectedPlace = vm.selectedPlace {
                 FullPlaceDetails(placeId: selectedPlace.placeId)
+                    .navigationTitle(selectedPlace.name)
+                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }

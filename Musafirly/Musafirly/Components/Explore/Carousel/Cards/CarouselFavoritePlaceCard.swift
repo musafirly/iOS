@@ -78,5 +78,5 @@ struct CarouselFavoritePlaceCard: View {
 }
 
 #Preview {
-    CarouselPlaceCard(place: Place.defaultPlace, imageHeight: 150)
+    CarouselFavoritePlaceCard(favorite: FavoritePlace(Place.defaultPlace), imageHeight: 150)
 }
