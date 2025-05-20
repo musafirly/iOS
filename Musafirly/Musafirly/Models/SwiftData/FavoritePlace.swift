@@ -31,6 +31,7 @@ class FavoritePlace: Identifiable {
     var link: String?
     var popularTimes: [String: [String: Int]]?
     var distanceMeters: Double?
+    var halalScore: Float32?
     
     var about: String?
     var completeAddress: [String: String]?
@@ -47,7 +48,7 @@ class FavoritePlace: Identifiable {
         self.favoriteDate = .now
         
         self.name = place.summary.name
-        self.favoriteId = place.summary.placeId
+        self.favoriteId = place.id
         self.placeDescription = place.summary.placeDescription
         self.latitude = place.summary.latitude
         self.longitude = place.summary.longitude
@@ -63,6 +64,7 @@ class FavoritePlace: Identifiable {
         self.link = place.summary.link
         self.popularTimes = place.summary.popularTimes
         self.distanceMeters = place.summary.distanceMeters
+        self.halalScore = place.summary.halalScore
         
         self.about = place.about
         self.completeAddress = place.completeAddress

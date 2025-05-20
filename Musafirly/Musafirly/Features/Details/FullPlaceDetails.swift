@@ -48,6 +48,13 @@ struct FullPlaceDetails: View {
                         }
                         VStack(alignment: .leading, spacing: 16) {
                             
+                            if let halalScore = vm.place.summary.halalScore,
+                                halalScore > 0.7 {
+                                HalalBadge()
+                                    .frame(width: 150)
+                            }
+                            
+                            
                             // Description
                             if let description = vm.place.summary.placeDescription {
                                 
@@ -139,16 +146,27 @@ struct FullPlaceDetails: View {
             }
         }
         .task {
+            print("Loading details page for place \(vm.place.summary.placeId)")
+            
             do {
+                print("Looking for place id \(vm.place.summary.placeId) in favorites database")
+                
                 try vm.fetchIfPlaceFavorited(modelContext)
             } catch {
                 print("Error fetching place favorited status: \(error)")
             }
             
-            guard !vm.isFavorited else { return }
+            guard !vm.isFavorited else {
+                print("\(vm.place.summary.placeId) was found in favorites, so skipping fetching details")
+                return
+            }
             
             do {
+                print("Couldn't find \(vm.place.summary.placeId) in favorites, fetching details from API...")
+                
                 try await vm.fetchPlaceDetails()
+                
+                print("Fetch success")
             } catch {
                 print("Error fetching full place details for details screen")
             }

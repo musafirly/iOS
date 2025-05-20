@@ -76,7 +76,8 @@ extension Place {
                 timezone: from.timezone,
                 link: from.link,
                 popularTimes: from.popularTimes,
-                distanceMeters: from.distanceMeters
+                distanceMeters: from.distanceMeters,
+                halalScore: from.halalScore
             ),
             about: from.about,
             completeAddress: from.completeAddress,

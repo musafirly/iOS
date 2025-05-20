@@ -85,9 +85,13 @@ struct PlaceDetailsModalView: View {
                         
                         VStack(alignment: .leading, spacing: 16) {
                             
-                            // Name
-                            IconSection(iconSystemName: "map", labelText: vm.fullPlaceDetails.summary.name)
-                                .font(.headline)
+                            if let halalScore = vm.fullPlaceDetails.summary.halalScore,
+                                halalScore > 0.7 {
+                                var _ = print("Found a place with a halal score: \(halalScore)")
+                                
+                                HalalBadge()
+                                    .frame(width: 150)
+                            }
                             
                             
                             // Description

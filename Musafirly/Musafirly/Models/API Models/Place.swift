@@ -28,6 +28,7 @@ struct PlaceSummary: Identifiable, Codable {
     var link: String?
     var popularTimes: [String: [String: Int]]?
     var distanceMeters: Double?
+    var halalScore: Float32?
     
     enum CodingKeys: String, CodingKey {
         case placeId = "id"
@@ -47,29 +48,31 @@ struct PlaceSummary: Identifiable, Codable {
         case link
         case popularTimes
         case distanceMeters
+        case halalScore = "likelyHalal"
     }
     
     init(from decoder: Decoder) throws {
-         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-         self.placeId = try container.decode(String.self, forKey: .placeId)
-         self.name = try container.decode(String.self, forKey: .name)
-         self.placeDescription = try container.decodeIfPresent(String.self, forKey: .placeDescription)
-         self.latitude = try container.decode(Double.self, forKey: .latitude)
-         self.longitude = try container.decode(Double.self, forKey: .longitude)
-         self.phone = try container.decodeIfPresent(String.self, forKey: .phone)
-         self.website = try container.decodeIfPresent(String.self, forKey: .website)
-         self.reviewCount = try container.decodeIfPresent(Int.self, forKey: .reviewCount) ?? 0
-         self.reviewRating = try container.decodeIfPresent(Double.self, forKey: .reviewRating) ?? 0.0
-         self.reviewsPerRating = try container.decodeIfPresent([Int: Double].self, forKey: .reviewsPerRating)
-         self.thumbnailUrl = try container.decodeIfPresent(String.self, forKey: .thumbnailUrl)
-         self.openingHours = try container.decodeIfPresent([String: [String]].self, forKey: .openingHours)
-         self.priceRange = try container.decodeIfPresent(String.self, forKey: .priceRange)
-         self.timezone = try container.decodeIfPresent(String.self, forKey: .timezone)
-         self.link = try container.decodeIfPresent(String.self, forKey: .link)
-         self.popularTimes = try container.decodeIfPresent([String: [String: Int]].self, forKey: .popularTimes)
-         self.distanceMeters = try container.decodeIfPresent(Double.self, forKey: .distanceMeters)
-     }
+        self.placeId = try container.decode(String.self, forKey: .placeId)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.placeDescription = try container.decodeIfPresent(String.self, forKey: .placeDescription)
+        self.latitude = try container.decode(Double.self, forKey: .latitude)
+        self.longitude = try container.decode(Double.self, forKey: .longitude)
+        self.phone = try container.decodeIfPresent(String.self, forKey: .phone)
+        self.website = try container.decodeIfPresent(String.self, forKey: .website)
+        self.reviewCount = try container.decodeIfPresent(Int.self, forKey: .reviewCount) ?? 0
+        self.reviewRating = try container.decodeIfPresent(Double.self, forKey: .reviewRating) ?? 0.0
+        self.reviewsPerRating = try container.decodeIfPresent([Int: Double].self, forKey: .reviewsPerRating)
+        self.thumbnailUrl = try container.decodeIfPresent(String.self, forKey: .thumbnailUrl)
+        self.openingHours = try container.decodeIfPresent([String: [String]].self, forKey: .openingHours)
+        self.priceRange = try container.decodeIfPresent(String.self, forKey: .priceRange)
+        self.timezone = try container.decodeIfPresent(String.self, forKey: .timezone)
+        self.link = try container.decodeIfPresent(String.self, forKey: .link)
+        self.popularTimes = try container.decodeIfPresent([String: [String: Int]].self, forKey: .popularTimes)
+        self.distanceMeters = try container.decodeIfPresent(Double.self, forKey: .distanceMeters)
+        self.halalScore = try container.decodeIfPresent(Float32.self, forKey: .halalScore)
+    }
 
 
     init(
@@ -89,7 +92,8 @@ struct PlaceSummary: Identifiable, Codable {
         timezone: String? = nil,
         link: String? = nil,
         popularTimes: [String: [String: Int]]? = nil,
-        distanceMeters: Double? = nil
+        distanceMeters: Double? = nil,
+        halalScore: Float32? = nil
     ) {
         self.placeId = id
         self.name = name
@@ -108,6 +112,7 @@ struct PlaceSummary: Identifiable, Codable {
         self.link = link
         self.popularTimes = popularTimes
         self.distanceMeters = distanceMeters
+        self.halalScore = halalScore
     }
 }
 
@@ -158,6 +163,7 @@ struct Place: Identifiable, Codable {
         case link
         case popularTimes
         case distanceMeters
+        case halalScore = "likelyHalal"
     }
 
 
@@ -196,7 +202,7 @@ struct Place: Identifiable, Codable {
         let link = try container.decodeIfPresent(String.self, forKey: .link)
         let popularTimes = try container.decodeIfPresent([String: [String: Int]].self, forKey: .popularTimes)
         let distanceMeters = try container.decodeIfPresent(Double.self, forKey: .distanceMeters)
-
+        let halalScore = try container.decodeIfPresent(Float32.self, forKey: .halalScore)
 
         self.summary = PlaceSummary(
             id: id,
@@ -215,7 +221,8 @@ struct Place: Identifiable, Codable {
             timezone: timezone,
             link: link,
             popularTimes: popularTimes,
-            distanceMeters: distanceMeters
+            distanceMeters: distanceMeters,
+            halalScore: halalScore
         )
     }
     
@@ -260,5 +267,6 @@ struct Place: Identifiable, Codable {
         try container.encodeIfPresent(summary.link, forKey: .link)
         try container.encodeIfPresent(summary.popularTimes, forKey: .popularTimes)
         try container.encodeIfPresent(summary.distanceMeters, forKey: .distanceMeters)
+        try container.encodeIfPresent(summary.halalScore, forKey: .halalScore)
     }
 }
