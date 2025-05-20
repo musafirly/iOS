@@ -61,9 +61,9 @@ class PlaceDetailsModalViewModel: ObservableObject {
 
     func removeFavorite(_ context: ModelContext) {
          do {
-             print("Attempting to delete favorite with id \(fullPlaceDetails.summary.placeId)")
+             print("Attempting to delete favorite with id \(placeId)")
 
-             try context.delete(model: FavoritePlace.self, where: FavoritePlace.searchForPlacePredicate(withPlaceId: fullPlaceDetails.summary.placeId))
+             try context.delete(model: FavoritePlace.self, where: FavoritePlace.searchForPlacePredicate(withPlaceId: placeId))
              
              isCached = false
          } catch {
