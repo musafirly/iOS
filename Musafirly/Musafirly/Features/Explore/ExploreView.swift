@@ -26,6 +26,13 @@ struct ExploreView: View {
             Spacer()
         }
         .navigationTitle("Explore")
+        .toolbar() {
+            NavigationLink {
+                SettingsView()
+            } label: {
+                Label("Settings", systemImage: "gear")
+            }
+        }
         .onAppear() {
             do {
                 print("Retrieving favorite restaurants for explore page...")

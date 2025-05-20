@@ -10,7 +10,6 @@ import MapKit
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .home
-    //    @AppStorage("theme") private var theme: ColorScheme = .light
     
     @StateObject private var homeViewModel = HomeViewModel()
     @StateObject private var exploreViewModel = ExploreViewModel()
