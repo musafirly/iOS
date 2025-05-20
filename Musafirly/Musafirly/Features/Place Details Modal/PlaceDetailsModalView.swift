@@ -102,6 +102,23 @@ struct PlaceDetailsModalView: View {
                                 .font(.subheadline)
                             }
                             
+                            
+                            if let addressParts = vm.fullPlaceDetails.completeAddress,
+                               let street = addressParts["street"],
+                               let city = addressParts["city"],
+                               let state = addressParts["state"],
+                               let zip = addressParts["postal_code"]
+                            {
+                                
+                                let address = "\(street), \(city), \(state) \(zip)"
+                                
+                                IconSection(
+                                    iconSystemName: "location",
+                                    labelText: address)
+                                .font(.subheadline)
+                            }
+                            
+                            
                             // Website
                             if let website = vm.fullPlaceDetails.summary.website,
                                let url = URL(string: String(website.trimmingPrefix("/url?q=")))?.host() {

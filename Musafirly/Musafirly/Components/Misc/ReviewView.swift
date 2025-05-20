@@ -27,7 +27,7 @@ struct ReviewView: View {
                 }
             }
             
-            Text("\"\(review.description)\"")
+            Text(review.description.isEmpty ? "" : "\"\(review.description)\"")
                 .font(.subheadline)
         }
     }

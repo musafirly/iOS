@@ -16,8 +16,6 @@ class PlaceDetailsModalViewModel: ObservableObject {
     
     let placeId: String
     
-    var fullAddress: String?
-    
     init(placeId: String) {
         self.placeId = placeId
     }
@@ -104,14 +102,6 @@ class PlaceDetailsModalViewModel: ObservableObject {
             } catch {
                 print("Error creating halal calculate job: \(error.localizedDescription)")
             }
-        }
-        
-        if let addressDict = fullPlaceDetails.completeAddress {
-            let street = addressDict["street"]
-            let city = addressDict["city"]
-            let state = addressDict["state"]
-            
-            fullAddress = "\(street ?? ""), \(city ?? ""), \(state ?? "")"
         }
     }
     
