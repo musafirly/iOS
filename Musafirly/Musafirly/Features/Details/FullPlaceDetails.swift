@@ -114,6 +114,7 @@ struct FullPlaceDetails: View {
                             }
                             
                             
+
                             // Favorite Button
                             FavoriteButton(isFavorited: $vm.isFavorited) {
                                 if vm.isFavorited {
@@ -121,6 +122,14 @@ struct FullPlaceDetails: View {
                                 } else {
                                     vm.saveFavorite(modelContext)
                                 }
+                            }
+                            
+                            
+                            if let baseUrl = vm.place.summary.link {
+                                let lat = vm.place.summary.latitude
+                                let lon = vm.place.summary.longitude
+                                
+                                OpenGoogleMapsButton(lat, lon, backupMapsUrl: baseUrl)
                             }
                             
                             Divider()

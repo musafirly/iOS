@@ -130,7 +130,8 @@ struct PlaceDetailsModalView: View {
                             }
                             
                             
-                            // Favorite Button
+
+                                
                             FavoriteButton(isFavorited: $vm.isCached) {
                                 if vm.isCached {
                                     vm.removeFavorite(modelContext)
@@ -138,6 +139,15 @@ struct PlaceDetailsModalView: View {
                                     vm.saveFavorite(modelContext)
                                 }
                             }
+                               
+                            
+                            if let baseUrl = vm.fullPlaceDetails.summary.link {
+                                let lat = vm.fullPlaceDetails.summary.latitude
+                                let lon = vm.fullPlaceDetails.summary.longitude
+                                
+                                OpenGoogleMapsButton(lat, lon, backupMapsUrl: baseUrl)
+                            }
+                            
                             
                             Divider()
                             
