@@ -23,6 +23,7 @@ struct MapCenterIndicator: View {
                 .frame(width: 10, height: 10)
                 .scaleEffect(loading ? 1.2 : 1)
         }
+        .shadow(radius: 4)
         .scaleEffect(loading ? 1.2 : 1)
         .animation(
             .spring(response: 0.4, dampingFraction: 0.6),
