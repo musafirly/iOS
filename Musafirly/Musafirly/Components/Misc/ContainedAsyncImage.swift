@@ -23,13 +23,16 @@ struct ContainedAsyncImage: View {
                 switch phase {
                 case .empty:
                     ProgressView()
-                        .frame(width: CGFloat(randomImageWidths.randomElement() ?? 200), height: 250)
+                        .frame(width: CGFloat(randomImageWidths.randomElement() ?? 400), height: 250)
+                        .background(Color(UIColor.tertiarySystemBackground))
                 case .success(let image):
                     image
                         .flexibleImage()
                         .frame(maxWidth: .infinity)
                     
-                case .failure:
+                case .failure(let error):
+                    var _ = print("Loading image error: \(error.localizedDescription)")
+                    
                     if showFailedImage {
                         Image(systemName: "photo.on.rectangle.angled")
                             .flexibleImage()
