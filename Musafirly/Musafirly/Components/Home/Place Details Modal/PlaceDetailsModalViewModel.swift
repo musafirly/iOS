@@ -76,7 +76,7 @@ class PlaceDetailsModalViewModel: ObservableObject {
     }
     
     
-    func saveFavorite(_ context: ModelContext) { // Accept context here
+    func saveFavorite(_ context: ModelContext) {
         guard !isCached else {
             print("Place \(placeId) is marked as cached.")
             return

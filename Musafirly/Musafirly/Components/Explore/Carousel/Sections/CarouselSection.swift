@@ -51,9 +51,6 @@ struct CarouselSectionView: View {
                     .padding(16)
                 }
                 .scrollIndicators(.never)
-//                .navigationDestination(for: String.self) { place in
-//                    PlaceDetailsModalView(place: place)
-//                }
             }
         }
         .padding(.vertical, 16)

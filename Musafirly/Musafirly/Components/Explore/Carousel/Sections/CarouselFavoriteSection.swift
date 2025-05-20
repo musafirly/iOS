@@ -34,7 +34,9 @@ struct CarouselFavoriteSection: View {
                     LazyHStack(alignment: .top, spacing: 16) {
                         ForEach(places) { place in
                             NavigationLink {
-                                
+                                CarouselFavoritePlaceDetails(place: place)
+                                    .navigationTitle(place.name)
+                                    .navigationBarTitleDisplayMode(.inline)
                             } label: {
                                 CarouselFavoritePlaceCard(
                                     favorite: place,
@@ -45,7 +47,6 @@ struct CarouselFavoriteSection: View {
                                     height: geometry.size.height * 0.4)
                             }
                             .buttonStyle(.plain)
-                            
                         }
                     }
                     .padding(16)

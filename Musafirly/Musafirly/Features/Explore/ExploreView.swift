@@ -19,13 +19,14 @@ struct ExploreView: View {
     
     var body: some View {
         NavigationStack {
-            VStack (alignment: .leading, spacing: 20) {
+            VStack (alignment: .leading, spacing: 16) {
                     CarouselFavoriteSection(
                         favoritePlaces: vm.favoritedPlaces,
                         titleText: "Your Favorites")
                     
                     Spacer()
             }
+            .navigationTitle("Explore")
             .onAppear() {
                 do {
                     print("Retrieving favorite restaurants for explore page...")
@@ -36,7 +37,6 @@ struct ExploreView: View {
                 }
             }
         }
-        .navigationTitle("Explore")
     }
 }
 

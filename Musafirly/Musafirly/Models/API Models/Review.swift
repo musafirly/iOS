@@ -10,9 +10,9 @@ struct Review: Identifiable, Codable {
     var id: String { reviewerId }
     let reviewerId: String
     let name: String
-    var profilePicture: String?
+    var profilePicture: String
     let rating: Int
-    var description: String?
+    var description: String
     var images: [String]?
     let when: String
     var age: String?

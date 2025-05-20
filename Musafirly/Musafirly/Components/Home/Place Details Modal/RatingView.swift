@@ -10,7 +10,19 @@ import SwiftUI
 struct RatingView: View {
     
     let rating: Double
-    let ratingsCount: Int
+    let ratingsCount: Int?
+    
+    
+    init(rating: Double) {
+        self.rating = rating
+        self.ratingsCount = nil
+    }
+    
+    init(rating: Double, ratingsCount: Int) {
+        self.rating = rating
+        self.ratingsCount = ratingsCount
+    }
+    
     
     var body: some View {
         
@@ -26,8 +38,10 @@ struct RatingView: View {
                     .scaleEffect(0.75)
             }
             
-            Text("\(ratingsCount)")
-                .padding(.leading, 4)
+            if let count = ratingsCount {
+                Text("\(count)")
+                    .padding(.leading, 4)
+            }
         }
     }
 }
