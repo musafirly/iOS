@@ -29,7 +29,6 @@ struct ReviewView: View {
             
             Text("\"\(review.description)\"")
                 .font(.subheadline)
-//                .lineLimit(4)
         }
     }
 }

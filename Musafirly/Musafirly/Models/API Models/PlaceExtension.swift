@@ -56,4 +56,35 @@ extension Place {
         Place(summary: .newYork),
         Place(summary: .ZSOffices)
     ]
+    
+    init(from: FavoritePlace) {
+        self = Place(
+            summary: PlaceSummary(
+                id: from.favoriteId,
+                name: from.name,
+                placeDescription: from.placeDescription,
+                latitude: from.latitude,
+                longitude: from.longitude,
+                phone: from.phone,
+                website: from.website,
+                reviewCount: from.reviewCount,
+                reviewRating: from.reviewRating,
+                reviewsPerRating: from.reviewsPerRating,
+                thumbnailUrl: from.thumbnailUrl,
+                openingHours: from.openingHours,
+                priceRange: from.priceRange,
+                timezone: from.timezone,
+                link: from.link,
+                popularTimes: from.popularTimes,
+                distanceMeters: from.distanceMeters
+            ),
+            about: from.about,
+            completeAddress: from.completeAddress,
+            owners: from.owners,
+            categories: from.categories,
+            images: from.images,
+            links: from.links,
+            reviews: from.reviews
+        )
+    }
 }

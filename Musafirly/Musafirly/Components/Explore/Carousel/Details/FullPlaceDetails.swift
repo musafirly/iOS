@@ -9,14 +9,14 @@ import SwiftUI
 import SwiftData
 
 
-struct CarouselFavoritePlaceDetails: View {
-    @State private var showError: Bool = false
-    @State private var isFavorited: Bool = true
+struct FullPlaceDetails: View {
+    @StateObject private var vm: FullPlaceDetailsViewModel
     
     @Environment(\.modelContext) private var modelContext: ModelContext
     
-    let place: FavoritePlace
-
+    init(placeId: String) {
+        _vm = StateObject(wrappedValue: FullPlaceDetailsViewModel(placeId: placeId))
+    }
     
     var body: some View {
         ScrollView {
@@ -27,13 +27,13 @@ struct CarouselFavoritePlaceDetails: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
                         
-                        if let thumbnailUrl = place.thumbnailUrl {
+                        if let thumbnailUrl = vm.place.summary.thumbnailUrl {
                             ContainedAsyncImage(imageUrl: thumbnailUrl)
                                 .rounded(5)
                         }
                         
-                        ForEach(place.images.indices, id: \.self) { index in
-                            if let imageUrl = place.images[index]["url"] {
+                        ForEach(vm.place.images.indices, id: \.self) { index in
+                            if let imageUrl = vm.place.images[index]["url"] {
                                 ContainedAsyncImage(imageUrl: imageUrl, showFailedImage: false)
                                     .rounded(5)
                             }
@@ -44,7 +44,7 @@ struct CarouselFavoritePlaceDetails: View {
                 VStack(alignment: .leading, spacing: 16) {
                     
                     // Description
-                    if let description = place.placeDescription {
+                    if let description = vm.place.summary.placeDescription {
                         
                         IconSection(
                             iconSystemName: "info",
@@ -55,7 +55,7 @@ struct CarouselFavoritePlaceDetails: View {
                     
                     // Category
                     HStack {
-                        if let category = place.categories.first {
+                        if let category = vm.place.categories.first {
                             
                             IconSection(
                                 iconSystemName: "tag",
@@ -64,13 +64,13 @@ struct CarouselFavoritePlaceDetails: View {
                         }
                         
                         RatingView(
-                            rating: place.reviewRating,
-                            ratingsCount: place.reviewCount)
+                            rating: vm.place.summary.reviewRating,
+                            ratingsCount: vm.place.summary.reviewCount)
                     }
                     
                     
                     // Address
-                    if let addressParts = place.completeAddress,
+                    if let addressParts = vm.place.completeAddress,
                        let street = addressParts["street"],
                        let city = addressParts["city"],
                        let state = addressParts["state"],
@@ -86,23 +86,16 @@ struct CarouselFavoritePlaceDetails: View {
                     }
                     
                     
-                    if let phone = place.phone {
+                    if let phone = vm.place.summary.phone {
                         IconSection(iconSystemName: "phone", labelText: phone)
                     }
                     
                     
                     // Website
-                    if let website = place.website,
+                    if let website = vm.place.summary.website,
                        let url = URL(string: String(website.trimmingPrefix("/url?q=")))?.host() {
                         IconSection(
                             iconSystemName: "text.page",
-                            labelText: url
-                        )
-                        .font(.subheadline)
-                    } else if let link = place.link,
-                              let url = URL(string: link)?.host() {
-                        IconSection(
-                            iconSystemName: "link",
                             labelText: url
                         )
                         .font(.subheadline)
@@ -110,24 +103,26 @@ struct CarouselFavoritePlaceDetails: View {
                     
                     
                     // Favorite Button
-                    FavoriteButton(isFavorited: $isFavorited) {
-                        if isFavorited {
-                            removeFavorite()
+                    FavoriteButton(isFavorited: $vm.isFavorited) {
+                        if vm.isFavorited {
+                            vm.removeFavorite(modelContext)
                         } else {
-                            saveFavorite()
+                            vm.saveFavorite(modelContext)
                         }
                     }
                     
                     Divider()
                     
                     // Reviews
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Recent \(min(place.reviewCount, 10)) Reviews")
-                            .font(.title3)
-                        
-                        VStack(alignment: .leading, spacing: 20) {
-                            ForEach(place.reviews) { review in
-                                ReviewView(review)
+                    if vm.place.summary.reviewCount > 0 {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Recent \(min(vm.place.summary.reviewCount, 10)) Reviews")
+                                .font(.title3)
+                            
+                            VStack(alignment: .leading, spacing: 20) {
+                                ForEach(vm.place.reviews) { review in
+                                    ReviewView(review)
+                                }
                             }
                         }
                     }
@@ -136,34 +131,20 @@ struct CarouselFavoritePlaceDetails: View {
                 .padding(.bottom)
             }
         }
-    }
-}
-
-
-extension CarouselFavoritePlaceDetails {
-    func saveFavorite() {
-        guard !isFavorited else {
-            print("Place \(place.favoriteId) is marked as cached.")
-            return
+        .task {
+            do {
+                try vm.fetchIfPlaceFavorited(modelContext)
+            } catch {
+                print("Error fetching place favorited status: \(error)")
+            }
+            
+            guard !vm.isFavorited else { return }
+            
+            do {
+                try await vm.fetchPlaceDetails()
+            } catch {
+                print("Error fetching full place details for details screen")
+            }
         }
-        
-        print("Caching place with id \(place.favoriteId)")
-        
-        modelContext.insert(place)
-
-        isFavorited = true
     }
-
-    
-    func removeFavorite() {
-         do {
-             print("Attempting to delete favorite with id \(place.favoriteId)")
-
-             try modelContext.delete(model: FavoritePlace.self, where: FavoritePlace.searchForPlacePredicate(withPlaceId: place.favoriteId))
-             
-             isFavorited = false
-         } catch {
-             print("Error deleting favorite: \(error)")
-         }
-     }
 }

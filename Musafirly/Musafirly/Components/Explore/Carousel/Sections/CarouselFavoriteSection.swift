@@ -32,14 +32,14 @@ struct CarouselFavoriteSection: View {
                 
                 ScrollView(.horizontal) {
                     LazyHStack(alignment: .top, spacing: 16) {
-                        ForEach(places) { place in
+                        ForEach(places) { favorite in
                             NavigationLink {
-                                CarouselFavoritePlaceDetails(place: place)
-                                    .navigationTitle(place.name)
+                                FullPlaceDetails(placeId: favorite.favoriteId)
+                                    .navigationTitle(favorite.name)
                                     .navigationBarTitleDisplayMode(.inline)
                             } label: {
                                 CarouselFavoritePlaceCard(
-                                    favorite: place,
+                                    favorite: favorite,
                                     imageHeight: geometry.size.height * 0.2
                                 )
                                 .frame(

@@ -16,18 +16,20 @@ struct ContentView: View {
     @StateObject private var exploreViewModel = ExploreViewModel()
     
     var body: some View {
-        
-        VStack (alignment: .leading) {
-            switch selectedTab {
-            case .home:
-                HomeView(homeViewModel)
-            case .explore:
-                ExploreView(exploreViewModel)
+        NavigationStack {
+            VStack (alignment: .leading) {
+                switch selectedTab {
+                case .home:
+                    HomeView(homeViewModel)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .explore:
+                    ExploreView(exploreViewModel)
+                }
+                
+                Spacer()
+                
+                CustomTabBar(selectedTab: $selectedTab)
             }
-            
-            Spacer()
-            
-            CustomTabBar(selectedTab: $selectedTab)
         }
     }
 }

@@ -63,7 +63,9 @@ struct HomeMap: View {
             
                 PlaceDetailsModalView(
                     placeId: place.id,
-                    showDetails: $vm.showDetailsModal)
+                    showDetails: $vm.showDetailsModal,
+                    showFullDetails: $vm.showFullDetails
+                )
                 .presentationDetents([
                     .fraction(0.99),
                     .fraction(0.55),
@@ -85,6 +87,15 @@ struct HomeMap: View {
                 })
                 .onEnded({ _ in vm.holdingScreen = false })
         )
+        .navigationDestination(isPresented: $vm.showFullDetails) {
+            if let selectedPlace = vm.selectedPlace {
+                FullPlaceDetails(placeId: selectedPlace.placeId)
+            } else {
+//                vm.showFullDetails = false
+                
+                EmptyView()
+            }
+        }
     }
 }
 

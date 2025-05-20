@@ -18,23 +18,21 @@ struct ExploreView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            VStack (alignment: .leading, spacing: 16) {
-                    CarouselFavoriteSection(
-                        favoritePlaces: vm.favoritedPlaces,
-                        titleText: "Your Favorites")
-                    
-                    Spacer()
-            }
-            .navigationTitle("Explore")
-            .onAppear() {
-                do {
-                    print("Retrieving favorite restaurants for explore page...")
-                    
-                    try vm.fetchFavoritedPlaces(modelContext)
-                } catch {
-                    print("Could not get favorites: \(error)")
-                }
+        VStack (alignment: .leading, spacing: 16) {
+            CarouselFavoriteSection(
+                favoritePlaces: vm.favoritedPlaces,
+                titleText: "Your Favorites")
+            
+            Spacer()
+        }
+        .navigationTitle("Explore")
+        .onAppear() {
+            do {
+                print("Retrieving favorite restaurants for explore page...")
+                
+                try vm.fetchFavoritedPlaces(modelContext)
+            } catch {
+                print("Could not get favorites: \(error)")
             }
         }
     }

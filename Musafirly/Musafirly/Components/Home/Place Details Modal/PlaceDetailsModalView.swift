@@ -11,20 +11,22 @@ import SwiftData
 
 struct PlaceDetailsModalView: View {
     @Binding var showDetails: Bool
+    @Binding var showFullDetails: Bool
     
     @StateObject var vm: PlaceDetailsModalViewModel
     @Environment(\.modelContext) private var modelContext: ModelContext
+    @Environment(\.dismiss) private var dismiss
     
     
-    init(placeId: String, showDetails: Binding<Bool>) {
+    init(placeId: String, showDetails: Binding<Bool>, showFullDetails: Binding<Bool>) {
         _vm = StateObject(wrappedValue: .init(placeId: placeId))
         
         _showDetails = showDetails
+        _showFullDetails = showFullDetails
     }
 
     
     var body: some View {
-        
         VStack {
             HStack {
                 VStack(alignment: .leading) {
@@ -69,7 +71,7 @@ struct PlaceDetailsModalView: View {
                 Spacer() // Push the loading view to the top
             } else {
                 
-            // Main information section
+                // Main information section
                 ScrollView {
                     
                     VStack(alignment: .leading, spacing: 16) {
@@ -78,32 +80,7 @@ struct PlaceDetailsModalView: View {
                         // Also, the width should be relative to the width of the screen AND the container its in so that it doesn't stretch the bounds of the app.
                         
                         if let imageUrl = vm.fullPlaceDetails.summary.thumbnailUrl {
-                            Group {
-                                
-                                AsyncImage(url: .init(string: imageUrl)) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                    case .success(let image):
-                                        image
-                                            .flexibleImage()
-                                            .frame(maxWidth: .infinity)
-                                        
-                                    case .failure(_):
-                                        Image(systemName: "photo.on.rectangle.angled")
-                                            .flexibleImage()
-                                            .foregroundColor(.gray)
-                                        
-                                    @unknown default:
-                                        alert("Error", isPresented: .constant(true), actions: {
-                                            Button(action: { showDetails = false } ) {
-                                                Text("Close")
-                                            }
-                                        })
-                                    }
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
+                            ContainedAsyncImage(imageUrl: imageUrl)
                         }
                         
                         VStack(alignment: .leading, spacing: 16) {
@@ -130,13 +107,6 @@ struct PlaceDetailsModalView: View {
                                     labelText: url
                                 )
                                 .font(.subheadline)
-                            } else if let link = vm.fullPlaceDetails.summary.link,
-                                      let url = URL(string: link)?.host() {
-                                IconSection(
-                                    iconSystemName: "link",
-                                    labelText: url
-                                )
-                                .font(.subheadline)
                             }
                             
                             
@@ -147,6 +117,23 @@ struct PlaceDetailsModalView: View {
                                 } else {
                                     vm.saveFavorite(modelContext)
                                 }
+                            }
+                            
+                            Divider()
+                            
+                            Button(action: {
+                                print("Clicked show more details")
+                                
+                                showFullDetails = true
+                                
+                                dismiss()
+                            }) {
+                                HStack {
+                                    Image(systemName: "chevron.right")
+                                    
+                                    Text("Show More Details")
+                                }
+                                .foregroundStyle(Color.primary)
                             }
                         }
                         .padding(.horizontal)
@@ -187,5 +174,7 @@ struct PlaceDetailsModalView: View {
 #Preview {
     PlaceDetailsModalView(
         placeId: "a2981eeb-3679-4217-ae52-4cbb333df381",
-        showDetails: .constant(true))
+        showDetails: .constant(true),
+        showFullDetails: .constant(false)
+    )
 }

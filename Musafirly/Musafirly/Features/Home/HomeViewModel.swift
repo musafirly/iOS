@@ -28,6 +28,8 @@ class HomeViewModel: ObservableObject {
     
     @Published var holdingScreen: Bool = false
     
+    @Published var showFullDetails: Bool = false
+    
 //    private var debounceTimer: Timer?
 //    private let debounceInterval: TimeInterval = 1
 
