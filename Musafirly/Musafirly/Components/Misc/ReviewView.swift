@@ -15,9 +15,12 @@ struct ReviewView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(spacing: 8) {
-                ContainedAsyncImage(imageUrl: review.profilePicture, showFailedImage: false)
-                    .frame(width: 32, height: 32)
-                    .clipShape(Circle())
+                Group {
+                    ContainedAsyncImage(imageUrl: review.profilePicture, showFailedImage: false, imageHeight: 32)
+                }
+                .frame(width: 32, height: 32)
+                .clipShape(Circle())
+                    
                 
                 VStack(alignment: .leading) {
                     Text("\(review.name)")

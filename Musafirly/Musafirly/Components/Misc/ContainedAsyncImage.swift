@@ -11,10 +11,12 @@ struct ContainedAsyncImage: View {
     let imageUrl: String
     let showFailedImage: Bool
     let randomImageWidths = [250, 150, 350]
+    let imageHeight: CGFloat
     
-    init(imageUrl: String, showFailedImage: Bool = false) {
+    init(imageUrl: String, showFailedImage: Bool = false, imageHeight: CGFloat = 250) {
         self.imageUrl = imageUrl
         self.showFailedImage = showFailedImage
+        self.imageHeight = imageHeight
     }
     
     var body: some View {
@@ -27,7 +29,7 @@ struct ContainedAsyncImage: View {
                         .background(Color(UIColor.tertiarySystemBackground))
                 case .success(let image):
                     image
-                        .flexibleImage()
+                        .flexibleImage(imageHeight)
                         .frame(maxWidth: .infinity)
                     
                 case .failure(let error):

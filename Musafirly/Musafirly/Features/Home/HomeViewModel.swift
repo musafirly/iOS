@@ -126,8 +126,48 @@ class HomeViewModel: ObservableObject {
         
         self.markerPlaces = nearbyPlaces
         
+        for place in self.markerPlaces {
+            if place.halalScore == nil {
+                do {
+                    try await createHalalCalculateJob(forId: place.placeId)
+                } catch {
+                    print("Error calculating halal score for \(place.name): \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        
         self.loadingNewPlaces = false
         
         print("Nearby restaurant fetching success.")
+    }
+    
+    
+    func createHalalCalculateJob(forId: String) async throws {
+        let baseUrl = URL(string: "https://api.musafirly.com/jobs")!
+        
+        let data: [String: Any] = [
+            "payload" : [
+                "place_id": forId
+            ],
+            "type": "calc"
+        ]
+        
+        var request = URLRequest(url: baseUrl)
+        request.httpMethod = "POST"
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: data)
+        } catch let error {
+            print(error.localizedDescription)
+            return
+        }
+        
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+            return print("Server error: \(response.debugDescription)")
+        }
     }
 }
