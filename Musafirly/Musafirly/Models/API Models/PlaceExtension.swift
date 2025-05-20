@@ -57,6 +57,9 @@ extension Place {
         Place(summary: .ZSOffices)
     ]
     
+    // This is the result stemming from 5 hours of me banging my head against a wall trying to
+    //  properly save a custom struct (Place)'s properties using SwiftData, which I gave up on.
+    //  - Anthony
     init(from: FavoritePlace) {
         self = Place(
             summary: PlaceSummary(

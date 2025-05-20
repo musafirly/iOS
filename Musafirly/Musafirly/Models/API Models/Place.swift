@@ -72,6 +72,7 @@ struct PlaceSummary: Identifiable, Codable {
         self.popularTimes = try container.decodeIfPresent([String: [String: Int]].self, forKey: .popularTimes)
         self.distanceMeters = try container.decodeIfPresent(Double.self, forKey: .distanceMeters)
         self.halalScore = try container.decodeIfPresent(Float32.self, forKey: .halalScore)
+        
     }
 
 

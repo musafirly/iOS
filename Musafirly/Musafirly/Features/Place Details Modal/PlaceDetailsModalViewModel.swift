@@ -23,7 +23,7 @@ class PlaceDetailsModalViewModel: ObservableObject {
     }
     
     func tryLoadCachedPlaceDetails(_ context: ModelContext) throws {
-        let predicate = FavoritePlace.searchForPlacePredicate(withPlaceId: fullPlaceDetails.summary.placeId)
+        let predicate = FavoritePlace.searchForPlacePredicate(withPlaceId: placeId)
         let fetchDescriptor = FetchDescriptor<FavoritePlace>(predicate: predicate)
 
         do {
@@ -32,44 +32,12 @@ class PlaceDetailsModalViewModel: ObservableObject {
             guard let cachedPlace = cachedPlaceDetails.first else {
                 isCached = false
                 
-                print("Place is not cached.")
-                
                 return
             }
             
             isCached = true
             
-            // This is the result stemming from 5 hours of me banging my head against a wall trying to
-            //  properly save a custom struct (Place)'s properties using SwiftData, which I gave up on.
-            //  - Anthony
-            self.fullPlaceDetails = Place(
-                summary: PlaceSummary(
-                    id: cachedPlace.favoriteId,
-                    name: cachedPlace.name,
-                    placeDescription: cachedPlace.placeDescription,
-                    latitude: cachedPlace.latitude,
-                    longitude: cachedPlace.longitude,
-                    phone: cachedPlace.phone,
-                    website: cachedPlace.website,
-                    reviewCount: cachedPlace.reviewCount,
-                    reviewRating: cachedPlace.reviewRating,
-                    reviewsPerRating: cachedPlace.reviewsPerRating,
-                    thumbnailUrl: cachedPlace.thumbnailUrl,
-                    openingHours: cachedPlace.openingHours,
-                    priceRange: cachedPlace.priceRange,
-                    timezone: cachedPlace.timezone,
-                    link: cachedPlace.link,
-                    popularTimes: cachedPlace.popularTimes,
-                    distanceMeters: cachedPlace.distanceMeters
-                ),
-                about: cachedPlace.about,
-                completeAddress: cachedPlace.completeAddress,
-                owners: cachedPlace.owners,
-                categories: cachedPlace.categories,
-                images: cachedPlace.images,
-                links: cachedPlace.links,
-                reviews: cachedPlace.reviews
-            )
+            self.fullPlaceDetails = Place(from: cachedPlace)
         } catch {
             print("Error fetching cached place details: \(error)")
         }

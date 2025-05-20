@@ -87,7 +87,6 @@ struct PlaceDetailsModalView: View {
                             
                             if let halalScore = vm.fullPlaceDetails.summary.halalScore,
                                 halalScore > 0.7 {
-                                var _ = print("Found a place with a halal score: \(halalScore)")
                                 
                                 HalalBadge()
                                     .frame(width: 150)
