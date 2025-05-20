@@ -10,8 +10,9 @@ import SwiftUI
 struct ContainedAsyncImage: View {
     let imageUrl: String
     let showFailedImage: Bool
+    let randomImageWidths = [250, 150, 350]
     
-    init(imageUrl: String, showFailedImage: Bool = true) {
+    init(imageUrl: String, showFailedImage: Bool = false) {
         self.imageUrl = imageUrl
         self.showFailedImage = showFailedImage
     }
@@ -22,6 +23,7 @@ struct ContainedAsyncImage: View {
                 switch phase {
                 case .empty:
                     ProgressView()
+                        .frame(width: CGFloat(randomImageWidths.randomElement() ?? 200), height: 250)
                 case .success(let image):
                     image
                         .flexibleImage()

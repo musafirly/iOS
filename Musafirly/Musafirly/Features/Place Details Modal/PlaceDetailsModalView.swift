@@ -68,7 +68,7 @@ struct PlaceDetailsModalView: View {
             if vm.isLoading {
                 ProgressView("Fetching details...")
                     .padding()
-                Spacer() // Push the loading view to the top
+                Spacer()
             } else {
                 
                 // Main information section

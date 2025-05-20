@@ -12,6 +12,7 @@ import SwiftData
 class FullPlaceDetailsViewModel: ObservableObject {
     @Published var showError: Bool = false
     @Published var isFavorited: Bool = false
+    @Published var isLoading: Bool = true
     
     @Published var place: Place = Place.defaultPlace
     
@@ -42,6 +43,8 @@ class FullPlaceDetailsViewModel: ObservableObject {
         let decodedPlaceDetails = try decoder.decode(Place.self, from: data)
         
         self.place = decodedPlaceDetails
+        
+        self.isLoading = false
     }
     
     
@@ -55,6 +58,7 @@ class FullPlaceDetailsViewModel: ObservableObject {
         if let favorite = fetchResults.first {
             self.place = Place(from: favorite)
             self.isFavorited = true
+            self.isLoading = false
         } else {
             self.isFavorited = false
         }
